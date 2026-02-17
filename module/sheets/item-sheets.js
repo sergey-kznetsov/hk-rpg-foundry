@@ -1,12 +1,14 @@
+// module/sheets/item-sheets.js
 export class HKWeaponSheet extends ItemSheet {
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["hk", "sheet", "item"],
       template: "systems/hk-rpg/templates/item-weapon-sheet.hbs",
       width: 520,
-      height: 520
+      height: 540
     });
   }
+
   getData(options) {
     const data = super.getData(options);
     data.system = this.item.system;
@@ -23,6 +25,7 @@ export class HKArmorSheet extends ItemSheet {
       height: 360
     });
   }
+
   getData(options) {
     const data = super.getData(options);
     data.system = this.item.system;
