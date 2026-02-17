@@ -2,14 +2,9 @@
   "id": "hk-rpg",
   "title": "Unofficial Hollow Knight RPG",
   "description": "Private HK RPG system for Foundry VTT 13 (MVP)",
-  "version": "0.1.8",
-  "compatibility": {
-    "minimum": 13,
-    "verified": 13
-  },
-  "authors": [
-    { "name": "sergey-kznetsov" }
-  ],
+  "version": "0.1.9",
+  "compatibility": { "minimum": 13, "verified": 13 },
+  "authors": [{ "name": "sergey-kznetsov" }],
   "manifest": "https://raw.githubusercontent.com/sergey-kznetsov/hk-rpg-foundry/main/system.json",
   "download": "https://github.com/sergey-kznetsov/hk-rpg-foundry/archive/refs/heads/main.zip",
   "esmodules": [
@@ -19,20 +14,10 @@
     "module/sheets/actor-sheet.js",
     "module/sheets/item-sheets.js"
   ],
-  "styles": [
-    "styles/hk.css"
-  ],
-  "languages": [
-    { "lang": "ru", "name": "Русский", "path": "lang/ru.json" }
-  ],
+  "styles": ["styles/hk.css"],
+  "languages": [{ "lang": "ru", "name": "Русский", "path": "lang/ru.json" }],
   "documentTypes": {
-    "Actor": {
-      "bug": {}
-    },
-    "Item": {
-      "weapon": {},
-      "armor": {},
-      "condition": {}
-    }
+    "Actor": { "bug": {} },
+    "Item": { "weapon": {}, "armor": {}, "condition": {} }
   }
 }
