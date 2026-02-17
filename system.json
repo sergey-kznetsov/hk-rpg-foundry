@@ -4,19 +4,14 @@
   "description": "Private HK RPG system for Foundry VTT 13",
   "version": "0.1.0",
 
-  "authors": [
-    {
-      "name": "Sergey"
-    }
-  ],
-
   "compatibility": {
-    "minimum": "13",
-    "verified": "13"
+    "minimum": 13,
+    "verified": 13
   },
 
-  "manifest": "https://raw.githubusercontent.com/sergey-kznetsov/hk-rpg-foundry/main/system.json",
-  "download": "https://github.com/sergey-kznetsov/hk-rpg-foundry/archive/refs/heads/main.zip",
+  "authors": [
+    { "name": "Sergey" }
+  ],
 
   "esmodules": [
     "module/hk.js",
@@ -31,21 +26,14 @@
   ],
 
   "languages": [
-    {
-      "lang": "ru",
-      "name": "Русский",
-      "path": "lang/ru.json"
-    }
+    { "lang": "ru", "name": "Русский", "path": "lang/ru.json" }
   ],
 
   "documentTypes": {
-    "Actor": {
-      "bug": {}
-    },
-    "Item": {
-      "weapon": {},
-      "armor": {},
-      "condition": {}
-    }
-  }
+    "Actor": { "bug": {} },
+    "Item": { "weapon": {}, "armor": {}, "condition": {} }
+  },
+
+  "manifest": "https://raw.githubusercontent.com/sergey-kznetsov/hk-rpg-foundry/main/system.json",
+  "download": "https://github.com/sergey-kznetsov/hk-rpg-foundry/archive/refs/heads/main.zip"
 }
