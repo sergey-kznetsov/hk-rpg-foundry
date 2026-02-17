@@ -1,17 +1,23 @@
 {
   "id": "hk-rpg",
-  "title": "Unofficial Hollow Knight RPG (MVP)",
-  "manifest": "https://raw.githubusercontent.com/ТВОЙ_НИК/hk-rpg-foundry/main/system.json",
-  "download": "https://github.com/ТВОЙ_НИК/hk-rpg-foundry/archive/refs/heads/main.zip",
-  "description": "MVP system for Unofficial Hollow Knight RPG (private use).",
+  "title": "Unofficial Hollow Knight RPG",
+  "description": "Private HK RPG system for Foundry VTT 13",
   "version": "0.1.0",
-  "minimumCoreVersion": "13",
-  "compatibleCoreVersion": "13",
+
   "authors": [
     {
-      "name": "Sergey + ChatGPT"
+      "name": "Sergey"
     }
   ],
+
+  "compatibility": {
+    "minimum": "13",
+    "verified": "13"
+  },
+
+  "manifest": "https://raw.githubusercontent.com/sergey-kznetsov/hk-rpg-foundry/main/system.json",
+  "download": "https://github.com/sergey-kznetsov/hk-rpg-foundry/archive/refs/heads/main.zip",
+
   "esmodules": [
     "module/hk.js",
     "module/documents/actor.js",
@@ -19,9 +25,11 @@
     "module/sheets/actor-sheet.js",
     "module/sheets/item-sheets.js"
   ],
+
   "styles": [
     "styles/hk.css"
   ],
+
   "languages": [
     {
       "lang": "ru",
@@ -29,6 +37,7 @@
       "path": "lang/ru.json"
     }
   ],
+
   "documentTypes": {
     "Actor": {
       "bug": {}
@@ -38,22 +47,5 @@
       "armor": {},
       "condition": {}
     }
-  },
-  "packs": [
-    {
-      "name": "weapons",
-      "label": "Оружие (MVP)",
-      "path": "packs/weapons",
-      "type": "Item",
-      "system": "hk-rpg"
-    },
-    {
-      "name": "conditions",
-      "label": "Состояния (MVP)",
-      "path": "packs/conditions",
-      "type": "Item",
-      "system": "hk-rpg"
-    }
-  ],
-  "socket": true
+  }
 }
