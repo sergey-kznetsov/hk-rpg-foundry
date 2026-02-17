@@ -1,0 +1,1 @@
+export class HKItem extends Item {}

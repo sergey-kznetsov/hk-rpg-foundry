@@ -1,0 +1,57 @@
+{
+  "id": "hk-rpg",
+  "title": "Unofficial Hollow Knight RPG (MVP)",
+  "description": "MVP system for Unofficial Hollow Knight RPG (private use).",
+  "version": "0.1.0",
+  "minimumCoreVersion": "13",
+  "compatibleCoreVersion": "13",
+  "authors": [
+    {
+      "name": "Sergey + ChatGPT"
+    }
+  ],
+  "esmodules": [
+    "module/hk.js",
+    "module/documents/actor.js",
+    "module/documents/item.js",
+    "module/sheets/actor-sheet.js",
+    "module/sheets/item-sheets.js"
+  ],
+  "styles": [
+    "styles/hk.css"
+  ],
+  "languages": [
+    {
+      "lang": "ru",
+      "name": "Русский",
+      "path": "lang/ru.json"
+    }
+  ],
+  "documentTypes": {
+    "Actor": {
+      "bug": {}
+    },
+    "Item": {
+      "weapon": {},
+      "armor": {},
+      "condition": {}
+    }
+  },
+  "packs": [
+    {
+      "name": "weapons",
+      "label": "Оружие (MVP)",
+      "path": "packs/weapons",
+      "type": "Item",
+      "system": "hk-rpg"
+    },
+    {
+      "name": "conditions",
+      "label": "Состояния (MVP)",
+      "path": "packs/conditions",
+      "type": "Item",
+      "system": "hk-rpg"
+    }
+  ],
+  "socket": true
+}

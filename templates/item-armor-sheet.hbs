@@ -1,0 +1,12 @@
+<form class="hk sheet" autocomplete="off">
+  <header class="sheet-header"><h2>{{item.name}}</h2></header>
+  <section class="box">
+    <h3>{{localize "HKRPG.Armor"}}</h3>
+    <div class="row"><label>{{localize "HKRPG.DR"}}</label><input type="number" name="system.defense.dr" value="{{system.defense.dr}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.Durability"}}</label>
+      <input type="number" name="system.defense.durability.value" value="{{system.defense.durability.value}}"/> /
+      <input type="number" name="system.defense.durability.max" value="{{system.defense.durability.max}}"/>
+    </div>
+    <div class="row"><label>Тип (light/medium/heavy)</label><input name="system.kind" value="{{system.kind}}"/></div>
+  </section>
+</form>

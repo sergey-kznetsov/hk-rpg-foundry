@@ -1,0 +1,21 @@
+{
+  "name": "Гвоздь (MVP)",
+  "type": "weapon",
+  "system": {
+    "attack": {
+      "stat": "pow",
+      "skill": "soldier",
+      "range": 1,
+      "damageBase": 2,
+      "damageType": "physical"
+    },
+    "cost": {
+      "stamTax": 1,
+      "stamInvestMax": 3
+    },
+    "flags": {
+      "ignoreDR": 0,
+      "ignoreArmorAbsorb": false
+    }
+  }
+}

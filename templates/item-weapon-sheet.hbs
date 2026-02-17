@@ -1,0 +1,17 @@
+<form class="hk sheet" autocomplete="off">
+  <header class="sheet-header"><h2>{{item.name}}</h2></header>
+  <section class="box">
+    <h3>{{localize "HKRPG.Weapon"}}</h3>
+    <div class="row"><label>Стат (pow/grace/shell/insight)</label><input name="system.attack.stat" value="{{system.attack.stat}}"/></div>
+    <div class="row"><label>Навык (ключ)</label><input name="system.attack.skill" value="{{system.attack.skill}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.Range"}}</label><input type="number" name="system.attack.range" value="{{system.attack.range}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.DamageBase"}}</label><input type="number" name="system.attack.damageBase" value="{{system.attack.damageBase}}"/></div>
+    <div class="row"><label>Тип урона (physical/magic/nature)</label><input name="system.attack.damageType" value="{{system.attack.damageType}}"/></div>
+    <hr/>
+    <div class="row"><label>{{localize "HKRPG.StamTax"}}</label><input type="number" name="system.cost.stamTax" value="{{system.cost.stamTax}}"/></div>
+    <div class="row"><label>Макс. вложенной выносливости</label><input type="number" name="system.cost.stamInvestMax" value="{{system.cost.stamInvestMax}}"/></div>
+    <hr/>
+    <div class="row"><label>Игнор ПУ (число)</label><input type="number" name="system.flags.ignoreDR" value="{{system.flags.ignoreDR}}"/></div>
+    <div class="row"><label>Игнор впитывание от брони (bool)</label><input type="checkbox" name="system.flags.ignoreArmorAbsorb" {{checked system.flags.ignoreArmorAbsorb}}/></div>
+  </section>
+</form>
