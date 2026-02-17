@@ -2,7 +2,7 @@
   "id": "hk-rpg",
   "title": "Unofficial Hollow Knight RPG",
   "description": "Private HK RPG system for Foundry VTT 13",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "compatibility": { "minimum": 13, "verified": 13 },
   "authors": [{ "name": "Sergey" }],
   "esmodules": [
