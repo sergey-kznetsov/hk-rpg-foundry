@@ -1,121 +1,75 @@
 {
   "Actor": {
-    "types": {
-      "bug": {
-        "stats": {
-          "pow": {
-            "value": 3,
-            "half": 0
-          },
-          "grace": {
-            "value": 3,
-            "half": 0
-          },
-          "shell": {
-            "value": 3,
-            "half": 0
-          },
-          "insight": {
-            "value": 3,
-            "half": 0
-          }
-        },
-        "skills": {
-          "soldier": {
-            "rank": 0
-          },
-          "scout": {
-            "rank": 0
-          },
-          "lore": {
-            "rank": 0
-          }
-        },
-        "pools": {
-          "heart": {
-            "value": 7,
-            "max": 7
-          },
-          "soul": {
-            "value": 3,
-            "max": 3
-          },
-          "stam": {
-            "value": 3,
-            "max": 3
-          },
-          "satiety": {
-            "value": 0,
-            "max": 20
-          }
-        },
-        "meta": {
-          "speed": 6,
-          "size": "medium",
-          "marks": {
-            "value": 3,
-            "max": 3
-          },
-          "absorption": 0
-        },
-        "derived": {
-          "carry": 3,
-          "maneuver": 2,
-          "beltSlots": 3,
-          "techSlots": 3,
-          "dr": 0
-        },
-        "combat": {
-          "reactionAvailable": true,
-          "statuses": {}
-        }
+    "bug": {
+      "stats": {
+        "pow": { "value": 3, "half": 0 },
+        "grace": { "value": 3, "half": 0 },
+        "shell": { "value": 3, "half": 0 },
+        "insight": { "value": 3, "half": 0 }
+      },
+      "skills": {
+        "soldier": { "rank": 0 },
+        "scout": { "rank": 0 },
+        "lore": { "rank": 0 }
+      },
+      "pools": {
+        "heart": { "value": 7, "max": 7 },
+        "soul": { "value": 3, "max": 3 },
+        "stam": { "value": 3, "max": 3 },
+        "satiety": { "value": 0, "max": 20 }
+      },
+      "meta": {
+        "speed": 6,
+        "size": "medium",
+        "marks": { "value": 3, "max": 3 },
+        "absorption": 0
+      },
+      "derived": {
+        "carry": 3,
+        "maneuver": 2,
+        "beltSlots": 3,
+        "techSlots": 3,
+        "dr": 0
+      },
+      "combat": {
+        "reactionAvailable": true,
+        "statuses": {}
       }
     }
   },
   "Item": {
-    "types": {
-      "weapon": {
-        "attack": {
-          "stat": "pow",
-          "skill": "soldier",
-          "range": 1,
-          "damageBase": 2,
-          "damageType": "physical"
-        },
-        "cost": {
-          "stamTax": 1,
-          "stamInvestMax": 3
-        },
-        "flags": {
-          "ignoreDR": 0,
-          "ignoreArmorAbsorb": false
-        }
+    "weapon": {
+      "attack": {
+        "stat": "pow",
+        "skill": "soldier",
+        "range": 1,
+        "damageBase": 2,
+        "damageType": "physical"
       },
-      "armor": {
-        "defense": {
-          "dr": 1,
-          "durability": {
-            "value": 3,
-            "max": 3
-          }
-        },
-        "kind": "light"
+      "cost": {
+        "stamTax": 1,
+        "stamInvestMax": 3
       },
-      "condition": {
-        "stackable": true,
-        "stacks": {
-          "value": 0,
-          "max": 3
-        },
-        "duration": {
-          "type": "rounds",
-          "value": 0
-        },
-        "modifiers": {
-          "attackDiceDelta": 0,
-          "defenseDiceDelta": 0,
-          "speedDelta": 0
-        }
+      "flags": {
+        "ignoreDR": 0,
+        "ignoreArmorAbsorb": false
+      }
+    },
+    "armor": {
+      "defense": {
+        "dr": 1,
+        "durability": { "value": 3, "max": 3 }
+      },
+      "kind": "light"
+    },
+    "condition": {
+      "stackable": true,
+      "stacks": { "value": 0, "max": 3 },
+      "duration": { "type": "rounds", "value": 0 },
+      "modifiers": {
+        "attackDiceDelta": 0,
+        "defenseDiceDelta": 0,
+        "speedDelta": 0
       }
     }
   }
