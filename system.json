@@ -29,10 +29,10 @@
     { "lang": "ru", "name": "Русский", "path": "lang/ru.json" }
   ],
 
-  "documentTypes": {
-    "Actor": { "bug": {} },
-    "Item": { "weapon": {}, "armor": {}, "condition": {} }
-  },
+  ""documentTypes": {
+  "Actor": ["bug"],
+  "Item": ["weapon", "armor", "condition"]
+},
 
   "manifest": "https://raw.githubusercontent.com/sergey-kznetsov/hk-rpg-foundry/main/system.json",
   "download": "https://github.com/sergey-kznetsov/hk-rpg-foundry/archive/refs/heads/main.zip"
