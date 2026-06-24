@@ -1,0 +1,133 @@
+<form class="hk sheet" autocomplete="off">
+  <header class="sheet-header hk-header">
+    <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+    <div class="hk-title-block">
+      <input class="hk-title" name="name" type="text" value="{{item.name}}"/>
+      <div class="hk-subtitle">{{type}}</div>
+    </div>
+  </header>
+
+  {{#if isShield}}
+  <section class="box">
+    <h3>{{localize "HKRPG.Shield"}}</h3>
+    <div class="row"><label>{{localize "HKRPG.Quality"}}</label><input type="number" name="system.quality" value="{{system.quality}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.Weight"}}</label><input type="number" name="system.weight" value="{{system.weight}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.Hands"}}</label><input type="number" name="system.hands" value="{{system.hands}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.Equipped"}}</label><input type="checkbox" name="system.equipped" {{checked system.equipped}}/></div>
+    <div class="row"><label>{{localize "HKRPG.DR"}}</label><input type="number" name="system.defense.dr" value="{{system.defense.dr}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.Durability"}}</label><input type="number" name="system.defense.durability.value" value="{{system.defense.durability.value}}"/> / <input type="number" name="system.defense.durability.max" value="{{system.defense.durability.max}}"/></div>
+  </section>
+  {{/if}}
+
+  {{#if isFocus}}
+  <section class="box">
+    <h3>{{localize "HKRPG.Focus"}}</h3>
+    <div class="row"><label>{{localize "HKRPG.Quality"}}</label><input type="number" name="system.quality" value="{{system.quality}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.Kind"}}</label><input name="system.focusType" value="{{system.focusType}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.DamageBase"}}</label><input type="number" name="system.damageBase" value="{{system.damageBase}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.Range"}}</label><input name="system.range" value="{{system.range}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.Hands"}}</label><input type="number" name="system.hands" value="{{system.hands}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.Weight"}}</label><input type="number" name="system.weight" value="{{system.weight}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.Equipped"}}</label><input type="checkbox" name="system.attuned" {{checked system.attuned}}/></div>
+  </section>
+  {{/if}}
+
+  {{#if isCondition}}
+  <section class="box">
+    <h3>{{localize "HKRPG.Condition"}}</h3>
+    <div class="row"><label>{{localize "HKRPG.Stackable"}}</label><input type="checkbox" name="system.stackable" {{checked system.stackable}}/></div>
+    <div class="row"><label>{{localize "HKRPG.Stacks"}}</label><input type="number" name="system.stacks.value" value="{{system.stacks.value}}"/> / <input type="number" name="system.stacks.max" value="{{system.stacks.max}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.DurationType"}}</label><input name="system.duration.type" value="{{system.duration.type}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.DurationValue"}}</label><input type="number" name="system.duration.value" value="{{system.duration.value}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.AttackDiceDelta"}}</label><input type="number" name="system.modifiers.attackDiceDelta" value="{{system.modifiers.attackDiceDelta}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.DefenseDiceDelta"}}</label><input type="number" name="system.modifiers.defenseDiceDelta" value="{{system.modifiers.defenseDiceDelta}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.SpeedDelta"}}</label><input type="number" name="system.modifiers.speedDelta" value="{{system.modifiers.speedDelta}}"/></div>
+  </section>
+  {{/if}}
+
+  {{#if isTrait}}
+  <section class="box">
+    <h3>{{localize "HKRPG.Trait"}}</h3>
+    <div class="row"><label>{{localize "HKRPG.Source"}}</label><input name="system.source" value="{{system.source}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.Hunger"}}</label><input type="number" name="system.hunger" value="{{system.hunger}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.Fright"}}</label><input type="number" step="0.5" name="system.fright" value="{{system.fright}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.Appeal"}}</label><input type="number" step="0.5" name="system.appeal" value="{{system.appeal}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.Subtrait"}}</label><input type="checkbox" name="system.isSubtrait" {{checked system.isSubtrait}}/></div>
+  </section>
+  {{/if}}
+
+  {{#if isPath}}
+  <section class="box">
+    <h3>{{localize "HKRPG.Path"}}</h3>
+    <div class="row"><label>{{localize "HKRPG.Category"}}</label><input name="system.category" value="{{system.category}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.Rank"}}</label><input type="number" name="system.rank" value="{{system.rank}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.Prepared"}}</label><input type="checkbox" name="system.prepared" {{checked system.prepared}}/></div>
+  </section>
+  {{/if}}
+
+  {{#if isArt}}
+  <section class="box">
+    <h3>{{localize "HKRPG.Art"}}</h3>
+    <div class="row"><label>{{localize "HKRPG.Path"}}</label><input name="system.path" value="{{system.path}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.Rank"}}</label><input type="number" name="system.rank" value="{{system.rank}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.Prepared"}}</label><input type="checkbox" name="system.prepared" {{checked system.prepared}}/></div>
+    <div class="row"><label>{{localize "HKRPG.StamCost"}}</label><input type="number" name="system.cost.stam" value="{{system.cost.stam}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.SoulCost"}}</label><input type="number" name="system.cost.soul" value="{{system.cost.soul}}"/></div>
+  </section>
+  {{/if}}
+
+  {{#if isSpell}}
+  <section class="box">
+    <h3>{{localize "HKRPG.Spell"}}</h3>
+    <div class="row"><label>{{localize "HKRPG.Mystery"}}</label><input name="system.mystery" value="{{system.mystery}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.Rank"}}</label><input type="number" name="system.rank" value="{{system.rank}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.Prepared"}}</label><input type="checkbox" name="system.prepared" {{checked system.prepared}}/></div>
+    <div class="row"><label>{{localize "HKRPG.SoulCost"}}</label><input type="number" name="system.cost.soul" value="{{system.cost.soul}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.Range"}}</label><input name="system.range" value="{{system.range}}"/></div>
+  </section>
+  {{/if}}
+
+  {{#if isCharm}}
+  <section class="box">
+    <h3>{{localize "HKRPG.Charm"}}</h3>
+    <div class="row"><label>{{localize "HKRPG.Rarity"}}</label><input name="system.rarity" value="{{system.rarity}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.Marks"}}</label><input type="number" name="system.marks" value="{{system.marks}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.Equipped"}}</label><input type="checkbox" name="system.equipped" {{checked system.equipped}}/></div>
+    <div class="row"><label>{{localize "HKRPG.Fragile"}}</label><input type="checkbox" name="system.fragile" {{checked system.fragile}}/></div>
+    <div class="row"><label>{{localize "HKRPG.Cursed"}}</label><input type="checkbox" name="system.cursed" {{checked system.cursed}}/></div>
+  </section>
+  {{/if}}
+
+  {{#if isConsumable}}
+  <section class="box">
+    <h3>{{localize "HKRPG.Consumable"}}</h3>
+    <div class="row"><label>{{localize "HKRPG.Kind"}}</label><input name="system.kind" value="{{system.kind}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.Quantity"}}</label><input type="number" name="system.quantity" value="{{system.quantity}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.Satiety"}}</label><input type="number" name="system.satiety" value="{{system.satiety}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.Effect"}}</label><input name="system.effect" value="{{system.effect}}"/></div>
+  </section>
+  {{/if}}
+
+  {{#if isGear}}
+  <section class="box">
+    <h3>{{localize "HKRPG.Gear"}}</h3>
+    <div class="row"><label>{{localize "HKRPG.Kind"}}</label><input name="system.kind" value="{{system.kind}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.Quality"}}</label><input type="number" name="system.quality" value="{{system.quality}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.Weight"}}</label><input type="number" name="system.weight" value="{{system.weight}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.Quantity"}}</label><input type="number" name="system.quantity" value="{{system.quantity}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.Equipped"}}</label><input type="checkbox" name="system.equipped" {{checked system.equipped}}/></div>
+  </section>
+  {{/if}}
+
+  <section class="box">
+    <h3>{{localize "HKRPG.EffectsJson"}}</h3>
+    <textarea name="system.effectsJson">{{effectsJson}}</textarea>
+  </section>
+
+  <section class="box">
+    <h3>{{localize "HKRPG.Description"}}</h3>
+    <textarea name="system.description">{{system.description}}</textarea>
+    <h3>{{localize "HKRPG.Notes"}}</h3>
+    <textarea name="system.notes">{{system.notes}}</textarea>
+  </section>
+</form>

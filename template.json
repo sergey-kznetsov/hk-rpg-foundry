@@ -10,26 +10,46 @@
       "skills": {
         "soldier": { "rank": 0 },
         "scout": { "rank": 0 },
-        "lore": { "rank": 0 }
+        "lore": { "rank": 0 },
+        "craft": { "rank": 0 },
+        "survival": { "rank": 0 },
+        "social": { "rank": 0 }
       },
       "pools": {
         "heart": { "value": 7, "max": 7 },
         "soul": { "value": 3, "max": 3 },
         "stam": { "value": 3, "max": 3 },
-        "satiety": { "value": 0, "max": 20 }
+        "satiety": { "value": 0, "max": 20 },
+        "supplies": { "value": 0, "max": 0 },
+        "essence": { "value": 0, "max": 0 }
       },
       "meta": {
         "speed": 6,
         "size": "medium",
+        "hunger": 4,
+        "fright": 1,
+        "appeal": 1,
         "marks": { "value": 3, "max": 3 },
-        "absorption": 0
+        "absorption": 0,
+        "notes": ""
+      },
+      "effective": {
+        "stats": {},
+        "skills": {},
+        "pools": {},
+        "meta": {},
+        "effects": []
       },
       "derived": {
         "carry": 3,
         "maneuver": 2,
         "beltSlots": 3,
         "techSlots": 3,
-        "dr": 0
+        "dr": 0,
+        "speed": 6,
+        "activeEffects": 0,
+        "equippedMarks": 0,
+        "freeMarks": 3
       },
       "combat": {
         "reactionAvailable": true,
@@ -39,12 +59,19 @@
   },
   "Item": {
     "weapon": {
+      "description": "",
+      "quality": 1,
+      "weight": 1,
+      "hands": 1,
+      "equipped": false,
       "attack": {
         "stat": "pow",
         "skill": "soldier",
         "range": 1,
         "damageBase": 2,
-        "damageType": "physical"
+        "damageType": "physical",
+        "kind": "melee",
+        "weaponTypes": []
       },
       "cost": {
         "stamTax": 1,
@@ -52,17 +79,61 @@
       },
       "flags": {
         "ignoreDR": 0,
-        "ignoreArmorAbsorb": false
-      }
+        "ignoreArmorAbsorb": false,
+        "pairable": false,
+        "provokesAdjacent": false
+      },
+      "effects": [],
+      "price": 0,
+      "source": ""
+    },
+    "shield": {
+      "description": "",
+      "quality": 1,
+      "weight": 1,
+      "hands": 1,
+      "equipped": false,
+      "defense": {
+        "parryBonus": 0,
+        "dr": 0,
+        "durability": { "value": 0, "max": 0 },
+        "absorption": 0,
+        "absorbDice": 0
+      },
+      "effects": [],
+      "price": 0,
+      "source": ""
     },
     "armor": {
+      "description": "",
       "defense": {
         "dr": 1,
-        "durability": { "value": 3, "max": 3 }
+        "durability": { "value": 3, "max": 3 },
+        "absorbBonus": 1,
+        "absorbRerolls": 0
       },
-      "kind": "light"
+      "kind": "light",
+      "weight": 1,
+      "equipped": true,
+      "effects": [],
+      "price": 0,
+      "source": ""
+    },
+    "focus": {
+      "description": "",
+      "quality": 1,
+      "focusType": "",
+      "damageBase": 0,
+      "range": "",
+      "hands": 1,
+      "weight": 0,
+      "attuned": false,
+      "effects": [],
+      "price": 0,
+      "source": ""
     },
     "condition": {
+      "description": "",
       "stackable": true,
       "stacks": { "value": 0, "max": 3 },
       "duration": { "type": "rounds", "value": 0 },
@@ -70,7 +141,80 @@
         "attackDiceDelta": 0,
         "defenseDiceDelta": 0,
         "speedDelta": 0
-      }
+      },
+      "effects": []
+    },
+    "trait": {
+      "description": "",
+      "source": "",
+      "hunger": 0,
+      "fright": 0,
+      "appeal": 0,
+      "isSubtrait": false,
+      "effects": [],
+      "notes": ""
+    },
+    "path": {
+      "description": "",
+      "category": "martial",
+      "rank": 1,
+      "prepared": false,
+      "effects": [],
+      "notes": ""
+    },
+    "art": {
+      "description": "",
+      "path": "",
+      "rank": 1,
+      "prepared": false,
+      "cost": { "stam": 0, "soul": 0 },
+      "effects": [],
+      "notes": ""
+    },
+    "spell": {
+      "description": "",
+      "mystery": "",
+      "rank": 1,
+      "prepared": false,
+      "cost": { "soul": 1 },
+      "range": "touch",
+      "effects": [],
+      "notes": ""
+    },
+    "charm": {
+      "description": "",
+      "rarity": "common",
+      "marks": 1,
+      "equipped": false,
+      "fragile": false,
+      "cursed": false,
+      "effects": [],
+      "notes": ""
+    },
+    "consumable": {
+      "description": "",
+      "kind": "food",
+      "quantity": 1,
+      "satiety": 0,
+      "effect": "",
+      "rarity": "common",
+      "strength": 0,
+      "reusable": false,
+      "weight": 0,
+      "price": 0,
+      "effects": [],
+      "notes": ""
+    },
+    "gear": {
+      "description": "",
+      "kind": "tool",
+      "quality": 0,
+      "weight": 1,
+      "quantity": 1,
+      "equipped": false,
+      "price": 0,
+      "effects": [],
+      "notes": ""
     }
   }
 }

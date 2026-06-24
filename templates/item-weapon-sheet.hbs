@@ -1,17 +1,40 @@
 <form class="hk sheet" autocomplete="off">
-  <header class="sheet-header"><h2>{{item.name}}</h2></header>
+  <header class="sheet-header hk-header">
+    <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+    <div class="hk-title-block">
+      <input class="hk-title" name="name" type="text" value="{{item.name}}"/>
+      <div class="hk-subtitle">{{localize "HKRPG.Weapon"}}</div>
+    </div>
+  </header>
+
   <section class="box">
     <h3>{{localize "HKRPG.Weapon"}}</h3>
-    <div class="row"><label>Стат (pow/grace/shell/insight)</label><input name="system.attack.stat" value="{{system.attack.stat}}"/></div>
-    <div class="row"><label>Навык (ключ)</label><input name="system.attack.skill" value="{{system.attack.skill}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.Equipped"}}</label><input type="checkbox" name="system.equipped" {{checked system.equipped}}/></div>
+    <div class="row"><label>{{localize "HKRPG.Quality"}}</label><input type="number" name="system.quality" value="{{system.quality}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.Weight"}}</label><input type="number" name="system.weight" value="{{system.weight}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.Hands"}}</label><input type="number" name="system.hands" value="{{system.hands}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.AttackStat"}}</label><input name="system.attack.stat" value="{{system.attack.stat}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.SkillKey"}}</label><input name="system.attack.skill" value="{{system.attack.skill}}"/></div>
     <div class="row"><label>{{localize "HKRPG.Range"}}</label><input type="number" name="system.attack.range" value="{{system.attack.range}}"/></div>
     <div class="row"><label>{{localize "HKRPG.DamageBase"}}</label><input type="number" name="system.attack.damageBase" value="{{system.attack.damageBase}}"/></div>
-    <div class="row"><label>Тип урона (physical/magic/nature)</label><input name="system.attack.damageType" value="{{system.attack.damageType}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.DamageType"}}</label><input name="system.attack.damageType" value="{{system.attack.damageType}}"/></div>
     <hr/>
     <div class="row"><label>{{localize "HKRPG.StamTax"}}</label><input type="number" name="system.cost.stamTax" value="{{system.cost.stamTax}}"/></div>
-    <div class="row"><label>Макс. вложенной выносливости</label><input type="number" name="system.cost.stamInvestMax" value="{{system.cost.stamInvestMax}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.StamInvestMax"}}</label><input type="number" name="system.cost.stamInvestMax" value="{{system.cost.stamInvestMax}}"/></div>
     <hr/>
-    <div class="row"><label>Игнор ПУ (число)</label><input type="number" name="system.flags.ignoreDR" value="{{system.flags.ignoreDR}}"/></div>
-    <div class="row"><label>Игнор впитывание от брони (bool)</label><input type="checkbox" name="system.flags.ignoreArmorAbsorb" {{checked system.flags.ignoreArmorAbsorb}}/></div>
+    <div class="row"><label>{{localize "HKRPG.IgnoreDR"}}</label><input type="number" name="system.flags.ignoreDR" value="{{system.flags.ignoreDR}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.Pairable"}}</label><input type="checkbox" name="system.flags.pairable" {{checked system.flags.pairable}}/></div>
+    <div class="row"><label>{{localize "HKRPG.ProvokesAdjacent"}}</label><input type="checkbox" name="system.flags.provokesAdjacent" {{checked system.flags.provokesAdjacent}}/></div>
+    <div class="row"><label>{{localize "HKRPG.IgnoreArmorAbsorb"}}</label><input type="checkbox" name="system.flags.ignoreArmorAbsorb" {{checked system.flags.ignoreArmorAbsorb}}/></div>
+  </section>
+
+  <section class="box">
+    <h3>{{localize "HKRPG.EffectsJson"}}</h3>
+    <textarea name="system.effectsJson">{{effectsJson}}</textarea>
+  </section>
+
+  <section class="box">
+    <h3>{{localize "HKRPG.Description"}}</h3>
+    <textarea name="system.description">{{system.description}}</textarea>
   </section>
 </form>

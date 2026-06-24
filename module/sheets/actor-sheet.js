@@ -6,16 +6,30 @@ export class HKBugSheet extends ActorSheet {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["hk", "sheet", "actor"],
       template: "systems/hk-rpg/templates/actor-bug-sheet.hbs",
-      width: 760,
-      height: 760
+      width: 880,
+      height: 860
     });
   }
 
   getData(options) {
     const data = super.getData(options);
+    const byType = (type) => this.actor.items.filter(i => i.type === type);
+
     data.system = this.actor.system;
-    data.weapons = this.actor.items.filter(i => i.type === "weapon");
-    data.armors = this.actor.items.filter(i => i.type === "armor");
+    data.weapons = byType("weapon");
+    data.armors = byType("armor");
+    data.conditions = byType("condition");
+    data.traits = byType("trait");
+    data.paths = byType("path");
+    data.arts = byType("art");
+    data.spells = byType("spell");
+    data.charms = byType("charm");
+    data.consumables = byType("consumable");
+    data.gear = [...byType("gear"), ...byType("shield"), ...byType("focus")];
+    data.itemTypes = HK.itemTypes.map(type => ({
+      type,
+      label: game.i18n.localize(HK.itemTypeLabels[type] ?? type)
+    }));
     return data;
   }
 
@@ -27,11 +41,39 @@ export class HKBugSheet extends ActorSheet {
       await this._rollStat(statKey);
     });
 
+    html.find(".hk-roll-skill").on("click", async (ev) => {
+      const statKey = ev.currentTarget.dataset.stat;
+      const skillKey = ev.currentTarget.dataset.skill;
+      await this._rollSkill(statKey, skillKey);
+    });
+
     html.find(".hk-attack").on("click", async (ev) => {
       const itemId = ev.currentTarget.dataset.itemId;
       const weapon = this.actor.items.get(itemId);
       if (!weapon) return ui.notifications.warn("Оружие не найдено.");
       await this._attackWithWeapon(weapon);
+    });
+
+    html.find(".hk-use-consumable").on("click", async (ev) => {
+      const item = this.actor.items.get(ev.currentTarget.dataset.itemId);
+      await HK.useConsumable(item, this.actor);
+    });
+
+    html.find(".hk-use-tech").on("click", async (ev) => {
+      const item = this.actor.items.get(ev.currentTarget.dataset.itemId);
+      await HK.useTechnique(item, this.actor);
+    });
+
+    html.find(".hk-toggle-equip").on("click", async (ev) => {
+      const item = this.actor.items.get(ev.currentTarget.dataset.itemId);
+      await HK.toggleEquip(item);
+    });
+
+    html.find(".hk-create-item").on("click", async (ev) => {
+      const type = ev.currentTarget.dataset.type;
+      const label = ev.currentTarget.dataset.label || type;
+      if (!HK.itemTypes.includes(type)) return ui.notifications.warn(`Неизвестный тип предмета: ${type}`);
+      await this.actor.createEmbeddedDocuments("Item", [{ name: label, type }]);
     });
 
     html.find(".item-edit").on("click", (ev) => {
@@ -48,30 +90,35 @@ export class HKBugSheet extends ActorSheet {
   }
 
   async _rollStat(statKey) {
-    const stat = this.actor.system.stats?.[statKey];
-    const dice = Number(stat?.value ?? 0);
-    const rerollFromHalf = Number(stat?.half ?? 0) ? 1 : 0;
+    const dice = HK.effectiveStat(this.actor, statKey);
+    const rerollFromHalf = HK.effectiveStatHalf(this.actor, statKey) ? 1 : 0;
+    const speaker = ChatMessage.getSpeaker({ actor: this.actor });
 
     const { roll } = await HK.rollPool({
       dice,
-      speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+      speaker,
       flavor: `Проверка: ${statKey} (${dice}d6)`
     });
 
-    // .5 => переброс одного провала (MVP)
     if (rerollFromHalf > 0) {
-      const term = roll.terms?.find(t => Array.isArray(t?.results));
-      const idx = term?.results?.findIndex(r => r.result < 5) ?? -1;
-      if (idx >= 0) {
-        const rr = await (new Roll("1d6")).evaluate();
-        const old = term.results[idx].result;
-        term.results[idx].result = Math.max(old, rr.total);
-        const succ2 = HK.countSuccesses(roll);
-        await rr.toMessage({
-          speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-          flavor: `Переброс (.5 ${statKey}): ${old} → ${rr.total}. Итог успехов: ${succ2}`
-        });
-      }
+      await HK.rerollOneFailureFromHalf({ roll, speaker, label: statKey });
+    }
+  }
+
+  async _rollSkill(statKey, skillKey) {
+    const statDice = HK.effectiveStat(this.actor, statKey);
+    const skillDice = HK.effectiveSkill(this.actor, skillKey);
+    const dice = statDice + skillDice;
+    const speaker = ChatMessage.getSpeaker({ actor: this.actor });
+
+    const { roll } = await HK.rollPool({
+      dice,
+      speaker,
+      flavor: `Проверка навыка: ${statKey}+${skillKey} (${statDice}+${skillDice} = ${dice}d6)`
+    });
+
+    if (HK.effectiveStatHalf(this.actor, statKey)) {
+      await HK.rerollOneFailureFromHalf({ roll, speaker, label: statKey });
     }
   }
 
@@ -130,56 +177,51 @@ export class HKBugSheet extends ActorSheet {
     if (spend > currentStam) return ui.notifications.warn("Недостаточно выносливости.");
     await this.actor.update({ "system.pools.stam.value": currentStam - spend });
 
-    // Dice pool
-    const statDice = Math.max(0, Number(this.actor.system.stats?.[statKey]?.value ?? 0));
-    const skillDice = skillKey ? Math.max(0, Number(this.actor.system.skills?.[skillKey]?.rank ?? 0)) : 0;
+    const statDice = Math.max(0, HK.effectiveStat(this.actor, statKey));
+    const skillDice = skillKey ? Math.max(0, HK.effectiveSkill(this.actor, skillKey)) : 0;
+    const conditionDice = HK.sumConditionModifier(this.actor, "attackDiceDelta");
 
-    const dice = Math.max(0, statDice + skillDice + invested - rangePenalty);
+    const dice = Math.max(0, statDice + skillDice + invested + conditionDice - rangePenalty);
 
     const { roll, succ } = await HK.rollPool({
       dice,
       speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-      flavor: `Атака ${weapon.name}: ${statKey}${skillKey ? "+" + skillKey : ""} + влож(${invested}) - дальн(${rangePenalty}) = ${dice}d6`
+      flavor: `Атака ${weapon.name}: ${statKey}${skillKey ? "+" + skillKey : ""} + влож(${invested}) + сост(${conditionDice}) - дальн(${rangePenalty}) = ${dice}d6`
     });
 
     if (succ <= 0) return;
 
-    // Probable damage: base + extra successes (succ-1), capped by max(base, invested)
     const extraSucc = Math.max(0, succ - 1);
     const addCap = Math.max(baseDamage, invested);
     const addDamage = Math.min(extraSucc, addCap);
     let probable = baseDamage + addDamage;
 
-    // DR from target armor (minus ignoreDR)
     const ignoreDR = Math.max(0, Number(weapon.system.flags?.ignoreDR ?? 0));
     const targetDRRaw = Math.max(0, Number(targetActor.system.derived?.dr ?? 0));
     const targetDR = Math.max(0, targetDRRaw - ignoreDR);
 
     probable = Math.max(1, probable - targetDR);
 
-    // Absorb (Shell) only for physical
     let absorbSucc = 0;
     if (damageType === "physical") {
-      const shellDice = Math.max(0, Number(targetActor.system.stats?.shell?.value ?? 0));
+      const shellDice = Math.max(0, HK.effectiveStat(targetActor, "shell"));
+      const defenseDelta = HK.sumConditionModifier(targetActor, "defenseDiceDelta");
       const res = await HK.rollPool({
-        dice: shellDice,
+        dice: Math.max(0, shellDice + defenseDelta),
         speaker: ChatMessage.getSpeaker({ actor: targetActor }),
-        flavor: `Впитывание (Панцирь): ${targetActor.name} (${shellDice}d6)`
+        flavor: `Впитывание (Панцирь): ${targetActor.name} (${shellDice} + сост(${defenseDelta}) d6)`
       });
       absorbSucc = res.succ;
     }
 
     let finalDmg = Math.max(0, probable - absorbSucc);
 
-    // Flat absorption if you use it
-    const absorption = Math.max(0, Number(targetActor.system.meta?.absorption ?? 0));
+    const absorption = Math.max(0, HK.effectiveMeta(targetActor, "absorption"));
     finalDmg = Math.max(0, finalDmg - absorption);
 
-    // Apply to Hearts
     const hp = Math.max(0, Number(targetActor.system.pools?.heart?.value ?? 0));
     await targetActor.update({ "system.pools.heart.value": Math.max(0, hp - finalDmg) });
 
-    // Armor durability loss (MVP): on hit + any 6 in attack roll
     if (HK.hasSix(roll)) {
       const armor = HK.getEquippedArmor(targetActor);
       if (armor) {
