@@ -54,6 +54,21 @@ export class HKBugSheet extends ActorSheet {
       await this._attackWithWeapon(weapon);
     });
 
+    html.find(".hk-use-consumable").on("click", async (ev) => {
+      const item = this.actor.items.get(ev.currentTarget.dataset.itemId);
+      await HK.useConsumable(item, this.actor);
+    });
+
+    html.find(".hk-use-tech").on("click", async (ev) => {
+      const item = this.actor.items.get(ev.currentTarget.dataset.itemId);
+      await HK.useTechnique(item, this.actor);
+    });
+
+    html.find(".hk-toggle-equip").on("click", async (ev) => {
+      const item = this.actor.items.get(ev.currentTarget.dataset.itemId);
+      await HK.toggleEquip(item);
+    });
+
     html.find(".hk-create-item").on("click", async (ev) => {
       const type = ev.currentTarget.dataset.type;
       const label = ev.currentTarget.dataset.label || type;
@@ -75,9 +90,8 @@ export class HKBugSheet extends ActorSheet {
   }
 
   async _rollStat(statKey) {
-    const stat = this.actor.system.stats?.[statKey];
-    const dice = Number(stat?.value ?? 0);
-    const rerollFromHalf = Number(stat?.half ?? 0) ? 1 : 0;
+    const dice = HK.effectiveStat(this.actor, statKey);
+    const rerollFromHalf = HK.effectiveStatHalf(this.actor, statKey) ? 1 : 0;
     const speaker = ChatMessage.getSpeaker({ actor: this.actor });
 
     const { roll } = await HK.rollPool({
@@ -92,10 +106,8 @@ export class HKBugSheet extends ActorSheet {
   }
 
   async _rollSkill(statKey, skillKey) {
-    const stat = this.actor.system.stats?.[statKey];
-    const skill = this.actor.system.skills?.[skillKey];
-    const statDice = Number(stat?.value ?? 0);
-    const skillDice = Number(skill?.rank ?? 0);
+    const statDice = HK.effectiveStat(this.actor, statKey);
+    const skillDice = HK.effectiveSkill(this.actor, skillKey);
     const dice = statDice + skillDice;
     const speaker = ChatMessage.getSpeaker({ actor: this.actor });
 
@@ -105,7 +117,7 @@ export class HKBugSheet extends ActorSheet {
       flavor: `Проверка навыка: ${statKey}+${skillKey} (${statDice}+${skillDice} = ${dice}d6)`
     });
 
-    if (Number(stat?.half ?? 0)) {
+    if (HK.effectiveStatHalf(this.actor, statKey)) {
       await HK.rerollOneFailureFromHalf({ roll, speaker, label: statKey });
     }
   }
@@ -165,8 +177,8 @@ export class HKBugSheet extends ActorSheet {
     if (spend > currentStam) return ui.notifications.warn("Недостаточно выносливости.");
     await this.actor.update({ "system.pools.stam.value": currentStam - spend });
 
-    const statDice = Math.max(0, Number(this.actor.system.stats?.[statKey]?.value ?? 0));
-    const skillDice = skillKey ? Math.max(0, Number(this.actor.system.skills?.[skillKey]?.rank ?? 0)) : 0;
+    const statDice = Math.max(0, HK.effectiveStat(this.actor, statKey));
+    const skillDice = skillKey ? Math.max(0, HK.effectiveSkill(this.actor, skillKey)) : 0;
     const conditionDice = HK.sumConditionModifier(this.actor, "attackDiceDelta");
 
     const dice = Math.max(0, statDice + skillDice + invested + conditionDice - rangePenalty);
@@ -192,7 +204,7 @@ export class HKBugSheet extends ActorSheet {
 
     let absorbSucc = 0;
     if (damageType === "physical") {
-      const shellDice = Math.max(0, Number(targetActor.system.stats?.shell?.value ?? 0));
+      const shellDice = Math.max(0, HK.effectiveStat(targetActor, "shell"));
       const defenseDelta = HK.sumConditionModifier(targetActor, "defenseDiceDelta");
       const res = await HK.rollPool({
         dice: Math.max(0, shellDice + defenseDelta),
@@ -204,7 +216,7 @@ export class HKBugSheet extends ActorSheet {
 
     let finalDmg = Math.max(0, probable - absorbSucc);
 
-    const absorption = Math.max(0, Number(targetActor.system.meta?.absorption ?? 0));
+    const absorption = Math.max(0, HK.effectiveMeta(targetActor, "absorption"));
     finalDmg = Math.max(0, finalDmg - absorption);
 
     const hp = Math.max(0, Number(targetActor.system.pools?.heart?.value ?? 0));
