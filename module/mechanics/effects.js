@@ -61,6 +61,7 @@ function legacyEffects(item) {
 
   if (item.type === "path") {
     const rank = Math.max(0, n(system.rank, 0));
+    if (rank > 0) effects.push({ key: "meta.marks.max", mode: "add", value: rank, label: `${item.name}: Метки за Ранг Пути` });
     if (system.category === "martial") effects.push({ key: "pools.stam.max", mode: "add", value: rank, label: `${item.name}: воинский Ранг` });
     if (system.category === "mystic") effects.push({ key: "pools.soul.max", mode: "add", value: rank, label: `${item.name}: мистический Ранг` });
   }
