@@ -184,9 +184,31 @@ export const HK = {
   }
 };
 
+function exposeHKApi() {
+  const api = {
+    HK,
+    content: HKContentImporter,
+    importContent: () => HKContentImporter.importAll(),
+    organizeContent: () => HKContentImporter.organizeContent(),
+    importItems: () => HKContentImporter.importItems(),
+    importCreatures: () => HKContentImporter.importCreatures(),
+    importNpcs: () => HKContentImporter.importNpcs(),
+    recoverStamina: actor => HK.recoverStamina(actor),
+    focusSoul: (actor, options) => HK.focusSoul(actor, options),
+    rest: (actor, options) => HK.rest(actor, options),
+    useConsumable: (item, actor) => HK.useConsumable(item, actor),
+    useTechnique: (item, actor) => HK.useTechnique(item, actor),
+    toggleEquip: item => HK.toggleEquip(item),
+    applySizeTemplate: (actor, key) => HK.applySizeTemplate(actor, key),
+    syncActorMaximums: actor => HK.syncActorMaximums(actor)
+  };
+  game.hk = Object.assign(game.hk ?? {}, api);
+  return game.hk;
+}
+
 Hooks.once("init", () => {
   console.log("HK-RPG | init");
-  game.hk = { HK };
+  exposeHKApi();
   CONFIG.Actor.documentClass = HKActor;
   CONFIG.Item.documentClass = HKItem;
   Actors.unregisterSheet("core", ActorSheet);
@@ -198,17 +220,5 @@ Hooks.once("init", () => {
 });
 
 Hooks.once("ready", () => {
-  game.hk.importContent = () => HKContentImporter.importAll();
-  game.hk.organizeContent = () => HKContentImporter.organizeContent();
-  game.hk.importItems = () => HKContentImporter.importItems();
-  game.hk.importCreatures = () => HKContentImporter.importCreatures();
-  game.hk.importNpcs = () => HKContentImporter.importNpcs();
-  game.hk.recoverStamina = actor => HK.recoverStamina(actor);
-  game.hk.focusSoul = (actor, options) => HK.focusSoul(actor, options);
-  game.hk.rest = (actor, options) => HK.rest(actor, options);
-  game.hk.useConsumable = (item, actor) => HK.useConsumable(item, actor);
-  game.hk.useTechnique = (item, actor) => HK.useTechnique(item, actor);
-  game.hk.toggleEquip = item => HK.toggleEquip(item);
-  game.hk.applySizeTemplate = (actor, key) => HK.applySizeTemplate(actor, key);
-  game.hk.syncActorMaximums = actor => HK.syncActorMaximums(actor);
+  exposeHKApi();
 });
