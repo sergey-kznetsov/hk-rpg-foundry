@@ -1,6 +1,10 @@
 <form class="hk sheet" autocomplete="off">
-  <header class="sheet-header">
-    <h2>{{actor.name}}</h2>
+  <header class="sheet-header hk-header">
+    <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}"/>
+    <div class="hk-title-block">
+      <input class="hk-title" name="name" type="text" value="{{actor.name}}"/>
+      <div class="hk-subtitle">{{localize "HKRPG.BugSheet"}}</div>
+    </div>
   </header>
 
   <section class="grid-2">
@@ -54,32 +58,68 @@
         <input type="number" name="system.pools.satiety.value" value="{{system.pools.satiety.value}}"/> /
         <input type="number" name="system.pools.satiety.max" value="{{system.pools.satiety.max}}"/>
       </div>
-
-      <hr/>
-      <div class="row">
-        <label>{{localize "HKRPG.Speed"}}</label>
-        <input type="number" name="system.meta.speed" value="{{system.meta.speed}}"/>
+      <div class="row"><label>{{localize "HKRPG.Supplies"}}</label>
+        <input type="number" name="system.pools.supplies.value" value="{{system.pools.supplies.value}}"/> /
+        <input type="number" name="system.pools.supplies.max" value="{{system.pools.supplies.max}}"/>
       </div>
-      <div class="row">
-        <label>{{localize "HKRPG.DR"}}</label>
-        <input type="number" name="system.derived.dr" value="{{system.derived.dr}}" disabled/>
-      </div>
-      <div class="row">
-        <label>Манёвренность</label>
-        <input type="number" name="system.derived.maneuver" value="{{system.derived.maneuver}}" disabled/>
+      <div class="row"><label>{{localize "HKRPG.Essence"}}</label>
+        <input type="number" name="system.pools.essence.value" value="{{system.pools.essence.value}}"/> /
+        <input type="number" name="system.pools.essence.max" value="{{system.pools.essence.max}}"/>
       </div>
     </div>
   </section>
 
-  <section class="box items">
-    <h3>Снаряжение (MVP)</h3>
-    <p style="opacity:0.8;">Создай Item типа weapon/armor и перетащи на лист. Для атаки выбери цель (Target) и нажми “Атака”.</p>
+  <section class="grid-2">
+    <div class="box">
+      <h3>{{localize "HKRPG.Secondary"}}</h3>
+      <div class="row"><label>{{localize "HKRPG.Size"}}</label><input name="system.meta.size" value="{{system.meta.size}}"/></div>
+      <div class="row"><label>{{localize "HKRPG.SpeedBase"}}</label><input type="number" name="system.meta.speed" value="{{system.meta.speed}}"/></div>
+      <div class="row"><label>{{localize "HKRPG.Speed"}}</label><input type="number" name="system.derived.speed" value="{{system.derived.speed}}" disabled/></div>
+      <div class="row"><label>{{localize "HKRPG.Hunger"}}</label><input type="number" name="system.meta.hunger" value="{{system.meta.hunger}}"/></div>
+      <div class="row"><label>{{localize "HKRPG.Fright"}}</label><input type="number" step="0.5" name="system.meta.fright" value="{{system.meta.fright}}"/></div>
+      <div class="row"><label>{{localize "HKRPG.Appeal"}}</label><input type="number" step="0.5" name="system.meta.appeal" value="{{system.meta.appeal}}"/></div>
+      <div class="row"><label>{{localize "HKRPG.Marks"}}</label><input type="number" name="system.meta.marks.value" value="{{system.meta.marks.value}}"/> / <input type="number" name="system.meta.marks.max" value="{{system.meta.marks.max}}"/></div>
+      <div class="row"><label>{{localize "HKRPG.Absorption"}}</label><input type="number" name="system.meta.absorption" value="{{system.meta.absorption}}"/></div>
+    </div>
 
-    <div>
-      <h4>{{localize "HKRPG.Weapon"}}</h4>
+    <div class="box">
+      <h3>{{localize "HKRPG.Derived"}}</h3>
+      <div class="row"><label>{{localize "HKRPG.Carry"}}</label><input type="number" name="system.derived.carry" value="{{system.derived.carry}}" disabled/></div>
+      <div class="row"><label>{{localize "HKRPG.Maneuver"}}</label><input type="number" name="system.derived.maneuver" value="{{system.derived.maneuver}}" disabled/></div>
+      <div class="row"><label>{{localize "HKRPG.BeltSlots"}}</label><input type="number" name="system.derived.beltSlots" value="{{system.derived.beltSlots}}" disabled/></div>
+      <div class="row"><label>{{localize "HKRPG.TechSlots"}}</label><input type="number" name="system.derived.techSlots" value="{{system.derived.techSlots}}" disabled/></div>
+      <div class="row"><label>{{localize "HKRPG.DR"}}</label><input type="number" name="system.derived.dr" value="{{system.derived.dr}}" disabled/></div>
+      <div class="row"><label>{{localize "HKRPG.ReactionAvailable"}}</label><input type="checkbox" name="system.combat.reactionAvailable" {{checked system.combat.reactionAvailable}}/></div>
+    </div>
+  </section>
+
+  <section class="box">
+    <h3>{{localize "HKRPG.Skills"}}</h3>
+    <div class="skills-grid">
+      <div class="row"><label>{{localize "HKRPG.SkillSoldier"}}</label><input type="number" name="system.skills.soldier.rank" value="{{system.skills.soldier.rank}}"/><button type="button" class="hk-roll-skill" data-stat="pow" data-skill="soldier">{{localize "HKRPG.RollCheck"}}</button></div>
+      <div class="row"><label>{{localize "HKRPG.SkillScout"}}</label><input type="number" name="system.skills.scout.rank" value="{{system.skills.scout.rank}}"/><button type="button" class="hk-roll-skill" data-stat="grace" data-skill="scout">{{localize "HKRPG.RollCheck"}}</button></div>
+      <div class="row"><label>{{localize "HKRPG.SkillLore"}}</label><input type="number" name="system.skills.lore.rank" value="{{system.skills.lore.rank}}"/><button type="button" class="hk-roll-skill" data-stat="insight" data-skill="lore">{{localize "HKRPG.RollCheck"}}</button></div>
+      <div class="row"><label>{{localize "HKRPG.SkillCraft"}}</label><input type="number" name="system.skills.craft.rank" value="{{system.skills.craft.rank}}"/><button type="button" class="hk-roll-skill" data-stat="insight" data-skill="craft">{{localize "HKRPG.RollCheck"}}</button></div>
+      <div class="row"><label>{{localize "HKRPG.SkillSurvival"}}</label><input type="number" name="system.skills.survival.rank" value="{{system.skills.survival.rank}}"/><button type="button" class="hk-roll-skill" data-stat="insight" data-skill="survival">{{localize "HKRPG.RollCheck"}}</button></div>
+      <div class="row"><label>{{localize "HKRPG.SkillSocial"}}</label><input type="number" name="system.skills.social.rank" value="{{system.skills.social.rank}}"/><button type="button" class="hk-roll-skill" data-stat="insight" data-skill="social">{{localize "HKRPG.RollCheck"}}</button></div>
+    </div>
+  </section>
+
+  <section class="box items">
+    <h3>{{localize "HKRPG.CreateItem"}}</h3>
+    <div class="hk-button-row">
+      {{#each itemTypes as |entry|}}
+        <button type="button" class="hk-create-item" data-type="{{entry.type}}" data-label="{{entry.label}}">+ {{entry.label}}</button>
+      {{/each}}
+    </div>
+  </section>
+
+  <section class="grid-2">
+    <div class="box items">
+      <h3>{{localize "HKRPG.Weapon"}}</h3>
       {{#each weapons as |it|}}
       <div class="item" data-item-id="{{it._id}}">
-        <span>{{it.name}} (урон {{it.system.attack.damageBase}}, дальн. {{it.system.attack.range}})</span>
+        <span>{{it.name}} — {{localize "HKRPG.DamageBase"}} {{it.system.attack.damageBase}}, {{localize "HKRPG.RangeShort"}} {{it.system.attack.range}}</span>
         <span>
           <button type="button" class="hk-attack" data-item-id="{{it._id}}">{{localize "HKRPG.Attack"}}</button>
           <a class="item-edit" title="Edit"><i class="fas fa-edit"></i></a>
@@ -89,11 +129,11 @@
       {{/each}}
     </div>
 
-    <div style="margin-top:10px;">
-      <h4>{{localize "HKRPG.Armor"}}</h4>
+    <div class="box items">
+      <h3>{{localize "HKRPG.Armor"}}</h3>
       {{#each armors as |it|}}
       <div class="item" data-item-id="{{it._id}}">
-        <span>{{it.name}} (ПУ {{it.system.defense.dr}}, прочн. {{it.system.defense.durability.value}}/{{it.system.defense.durability.max}})</span>
+        <span>{{it.name}} — {{localize "HKRPG.DR"}} {{it.system.defense.dr}}, {{localize "HKRPG.Durability"}} {{it.system.defense.durability.value}}/{{it.system.defense.durability.max}}</span>
         <span>
           <a class="item-edit" title="Edit"><i class="fas fa-edit"></i></a>
           <a class="item-delete" title="Delete"><i class="fas fa-trash"></i></a>
@@ -101,5 +141,54 @@
       </div>
       {{/each}}
     </div>
+  </section>
+
+  <section class="grid-2">
+    <div class="box items">
+      <h3>{{localize "HKRPG.Trait"}}</h3>
+      {{#each traits as |it|}}<div class="item" data-item-id="{{it._id}}"><span>{{it.name}} — {{localize "HKRPG.Hunger"}} {{it.system.hunger}}</span><span><a class="item-edit"><i class="fas fa-edit"></i></a><a class="item-delete"><i class="fas fa-trash"></i></a></span></div>{{/each}}
+    </div>
+    <div class="box items">
+      <h3>{{localize "HKRPG.Path"}}</h3>
+      {{#each paths as |it|}}<div class="item" data-item-id="{{it._id}}"><span>{{it.name}} — {{localize "HKRPG.Rank"}} {{it.system.rank}}</span><span><a class="item-edit"><i class="fas fa-edit"></i></a><a class="item-delete"><i class="fas fa-trash"></i></a></span></div>{{/each}}
+    </div>
+  </section>
+
+  <section class="grid-2">
+    <div class="box items">
+      <h3>{{localize "HKRPG.Art"}}</h3>
+      {{#each arts as |it|}}<div class="item" data-item-id="{{it._id}}"><span>{{it.name}} — {{localize "HKRPG.Rank"}} {{it.system.rank}}</span><span><a class="item-edit"><i class="fas fa-edit"></i></a><a class="item-delete"><i class="fas fa-trash"></i></a></span></div>{{/each}}
+    </div>
+    <div class="box items">
+      <h3>{{localize "HKRPG.Spell"}}</h3>
+      {{#each spells as |it|}}<div class="item" data-item-id="{{it._id}}"><span>{{it.name}} — {{localize "HKRPG.SoulCost"}} {{it.system.cost.soul}}</span><span><a class="item-edit"><i class="fas fa-edit"></i></a><a class="item-delete"><i class="fas fa-trash"></i></a></span></div>{{/each}}
+    </div>
+  </section>
+
+  <section class="grid-2">
+    <div class="box items">
+      <h3>{{localize "HKRPG.Charm"}}</h3>
+      {{#each charms as |it|}}<div class="item" data-item-id="{{it._id}}"><span>{{it.name}} — {{localize "HKRPG.Marks"}} {{it.system.marks}}</span><span><a class="item-edit"><i class="fas fa-edit"></i></a><a class="item-delete"><i class="fas fa-trash"></i></a></span></div>{{/each}}
+    </div>
+    <div class="box items">
+      <h3>{{localize "HKRPG.Condition"}}</h3>
+      {{#each conditions as |it|}}<div class="item" data-item-id="{{it._id}}"><span>{{it.name}} — {{localize "HKRPG.Stacks"}} {{it.system.stacks.value}}/{{it.system.stacks.max}}</span><span><a class="item-edit"><i class="fas fa-edit"></i></a><a class="item-delete"><i class="fas fa-trash"></i></a></span></div>{{/each}}
+    </div>
+  </section>
+
+  <section class="grid-2">
+    <div class="box items">
+      <h3>{{localize "HKRPG.Consumable"}}</h3>
+      {{#each consumables as |it|}}<div class="item" data-item-id="{{it._id}}"><span>{{it.name}} ×{{it.system.quantity}}</span><span><a class="item-edit"><i class="fas fa-edit"></i></a><a class="item-delete"><i class="fas fa-trash"></i></a></span></div>{{/each}}
+    </div>
+    <div class="box items">
+      <h3>{{localize "HKRPG.Gear"}}</h3>
+      {{#each gear as |it|}}<div class="item" data-item-id="{{it._id}}"><span>{{it.name}} ×{{it.system.quantity}}, {{localize "HKRPG.Weight"}} {{it.system.weight}}</span><span><a class="item-edit"><i class="fas fa-edit"></i></a><a class="item-delete"><i class="fas fa-trash"></i></a></span></div>{{/each}}
+    </div>
+  </section>
+
+  <section class="box">
+    <h3>{{localize "HKRPG.Notes"}}</h3>
+    <textarea name="system.meta.notes">{{system.meta.notes}}</textarea>
   </section>
 </form>
