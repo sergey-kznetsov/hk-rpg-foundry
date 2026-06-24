@@ -246,6 +246,7 @@ Hooks.once("init", () => {
 
 Hooks.once("ready", () => {
   game.hk.importContent = () => HKContentImporter.importAll();
+  game.hk.organizeContent = () => HKContentImporter.organizeContent();
   game.hk.importItems = () => HKContentImporter.importItems();
   game.hk.importCreatures = () => HKContentImporter.importCreatures();
   game.hk.importNpcs = () => HKContentImporter.importNpcs();
