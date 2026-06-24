@@ -1,12 +1,28 @@
 <form class="hk sheet" autocomplete="off">
-  <header class="sheet-header"><h2>{{item.name}}</h2></header>
+  <header class="sheet-header hk-header">
+    <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+    <div class="hk-title-block">
+      <input class="hk-title" name="name" type="text" value="{{item.name}}"/>
+      <div class="hk-subtitle">{{localize "HKRPG.Armor"}}</div>
+    </div>
+  </header>
+
   <section class="box">
     <h3>{{localize "HKRPG.Armor"}}</h3>
+    <div class="row"><label>{{localize "HKRPG.Equipped"}}</label><input type="checkbox" name="system.equipped" {{checked system.equipped}}/></div>
+    <div class="row"><label>{{localize "HKRPG.Kind"}}</label><input name="system.kind" value="{{system.kind}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.Weight"}}</label><input type="number" name="system.weight" value="{{system.weight}}"/></div>
     <div class="row"><label>{{localize "HKRPG.DR"}}</label><input type="number" name="system.defense.dr" value="{{system.defense.dr}}"/></div>
     <div class="row"><label>{{localize "HKRPG.Durability"}}</label>
       <input type="number" name="system.defense.durability.value" value="{{system.defense.durability.value}}"/> /
       <input type="number" name="system.defense.durability.max" value="{{system.defense.durability.max}}"/>
     </div>
-    <div class="row"><label>Тип (light/medium/heavy)</label><input name="system.kind" value="{{system.kind}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.AbsorbBonus"}}</label><input type="number" name="system.defense.absorbBonus" value="{{system.defense.absorbBonus}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.AbsorbRerolls"}}</label><input type="number" name="system.defense.absorbRerolls" value="{{system.defense.absorbRerolls}}"/></div>
+  </section>
+
+  <section class="box">
+    <h3>{{localize "HKRPG.Description"}}</h3>
+    <textarea name="system.description">{{system.description}}</textarea>
   </section>
 </form>
