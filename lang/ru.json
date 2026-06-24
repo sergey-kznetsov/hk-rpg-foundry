@@ -42,7 +42,9 @@
     "DR": "ПУ",
     "Durability": "Прочность",
     "Weapon": "Оружие",
+    "Shield": "Щит",
     "Armor": "Броня",
+    "Focus": "Фокусировка",
     "Condition": "Состояние",
     "Trait": "Черта",
     "Path": "Путь",
@@ -92,6 +94,10 @@
     "SkillLore": "Лор",
     "SkillCraft": "Ремесло",
     "SkillSurvival": "Выживание",
-    "SkillSocial": "Общение"
+    "SkillSocial": "Общение",
+    "ImportContent": "Импортировать контент HKRPG",
+    "ImportItems": "Импортировать предметы",
+    "ImportCreatures": "Импортировать монстров",
+    "ImportNpcs": "Импортировать НИПов"
   }
 }
