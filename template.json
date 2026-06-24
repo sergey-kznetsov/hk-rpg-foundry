@@ -23,6 +23,9 @@
         "supplies": { "value": 0, "max": 0 },
         "essence": { "value": 0, "max": 0 }
       },
+      "builder": {
+        "sizeTemplate": "medium"
+      },
       "meta": {
         "speed": 6,
         "size": "medium",
@@ -49,7 +52,35 @@
         "speed": 6,
         "activeEffects": 0,
         "equippedMarks": 0,
-        "freeMarks": 3
+        "freeMarks": 3,
+        "character": {
+          "sizeKey": "medium",
+          "sizeLabel": "Средний",
+          "traitCount": 0,
+          "subtraitCount": 0,
+          "traitLimit": 7,
+          "traitSlotsFree": 7,
+          "pathRanks": 0,
+          "martialRanks": 0,
+          "mysticRanks": 0,
+          "preparedArts": 0,
+          "preparedSpells": 0,
+          "usedTechSlots": 0,
+          "techSlots": 3,
+          "carriedWeight": 0,
+          "carry": 3,
+          "hardLoad": 6,
+          "encumbrance": "ok",
+          "hunger": 4,
+          "hungerMax": 20,
+          "hungerStart": 4,
+          "satietyMax": 10,
+          "satietyLoss": 10,
+          "marksUsed": 0,
+          "marksMax": 3,
+          "marksFree": 3,
+          "warnings": []
+        }
       },
       "combat": {
         "reactionAvailable": true,
