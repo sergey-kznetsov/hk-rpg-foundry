@@ -14,6 +14,7 @@ const STAT_KEYS = ["pow", "grace", "shell", "insight"];
 const SKILL_KEYS = ["soldier", "scout", "lore", "craft", "survival", "social"];
 const POOL_KEYS = ["heart", "soul", "stam", "satiety", "supplies", "essence"];
 const META_KEYS = ["speed", "hunger", "fright", "appeal", "absorption"];
+const ENCUMBRANCE_STATS = new Set(["pow", "grace"]);
 
 function n(value, fallback = 0) {
   const parsed = Number(value);
@@ -154,7 +155,9 @@ export function calculateEffectiveSystem(actor) {
 }
 
 export function effectiveStat(actor, key) {
-  return n(actor.system?.effective?.stats?.[key]?.value ?? actor.system?.stats?.[key]?.value, 0);
+  const base = n(actor.system?.effective?.stats?.[key]?.value ?? actor.system?.stats?.[key]?.value, 0);
+  const penalty = ENCUMBRANCE_STATS.has(key) ? n(actor.system?.derived?.character?.encumbrancePenalty, 0) : 0;
+  return Math.max(0, base + penalty);
 }
 
 export function effectiveStatHalf(actor, key) {
