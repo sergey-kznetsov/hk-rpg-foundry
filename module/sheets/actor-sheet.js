@@ -25,7 +25,7 @@ export class HKBugSheet extends ActorSheet {
     data.spells = byType("spell");
     data.charms = byType("charm");
     data.consumables = byType("consumable");
-    data.gear = byType("gear");
+    data.gear = [...byType("gear"), ...byType("shield"), ...byType("focus")];
     data.itemTypes = HK.itemTypes.map(type => ({
       type,
       label: game.i18n.localize(HK.itemTypeLabels[type] ?? type)
