@@ -33,13 +33,23 @@
         "absorption": 0,
         "notes": ""
       },
+      "effective": {
+        "stats": {},
+        "skills": {},
+        "pools": {},
+        "meta": {},
+        "effects": []
+      },
       "derived": {
         "carry": 3,
         "maneuver": 2,
         "beltSlots": 3,
         "techSlots": 3,
         "dr": 0,
-        "speed": 6
+        "speed": 6,
+        "activeEffects": 0,
+        "equippedMarks": 0,
+        "freeMarks": 3
       },
       "combat": {
         "reactionAvailable": true,
@@ -53,6 +63,7 @@
       "quality": 1,
       "weight": 1,
       "hands": 1,
+      "equipped": false,
       "attack": {
         "stat": "pow",
         "skill": "soldier",
@@ -72,6 +83,7 @@
         "pairable": false,
         "provokesAdjacent": false
       },
+      "effects": [],
       "price": 0,
       "source": ""
     },
@@ -88,6 +100,7 @@
         "absorption": 0,
         "absorbDice": 0
       },
+      "effects": [],
       "price": 0,
       "source": ""
     },
@@ -102,6 +115,7 @@
       "kind": "light",
       "weight": 1,
       "equipped": true,
+      "effects": [],
       "price": 0,
       "source": ""
     },
@@ -114,6 +128,7 @@
       "hands": 1,
       "weight": 0,
       "attuned": false,
+      "effects": [],
       "price": 0,
       "source": ""
     },
@@ -126,7 +141,8 @@
         "attackDiceDelta": 0,
         "defenseDiceDelta": 0,
         "speedDelta": 0
-      }
+      },
+      "effects": []
     },
     "trait": {
       "description": "",
@@ -135,6 +151,7 @@
       "fright": 0,
       "appeal": 0,
       "isSubtrait": false,
+      "effects": [],
       "notes": ""
     },
     "path": {
@@ -142,6 +159,7 @@
       "category": "martial",
       "rank": 1,
       "prepared": false,
+      "effects": [],
       "notes": ""
     },
     "art": {
@@ -150,6 +168,7 @@
       "rank": 1,
       "prepared": false,
       "cost": { "stam": 0, "soul": 0 },
+      "effects": [],
       "notes": ""
     },
     "spell": {
@@ -159,6 +178,7 @@
       "prepared": false,
       "cost": { "soul": 1 },
       "range": "touch",
+      "effects": [],
       "notes": ""
     },
     "charm": {
@@ -168,6 +188,7 @@
       "equipped": false,
       "fragile": false,
       "cursed": false,
+      "effects": [],
       "notes": ""
     },
     "consumable": {
@@ -181,6 +202,7 @@
       "reusable": false,
       "weight": 0,
       "price": 0,
+      "effects": [],
       "notes": ""
     },
     "gear": {
@@ -189,7 +211,9 @@
       "quality": 0,
       "weight": 1,
       "quantity": 1,
+      "equipped": false,
       "price": 0,
+      "effects": [],
       "notes": ""
     }
   }
