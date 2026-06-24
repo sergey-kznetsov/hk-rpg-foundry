@@ -22,41 +22,13 @@ const ITEM_TYPE_FOLDERS = {
 };
 
 const CONSUMABLE_KIND_FOLDERS = {
-  food: "Еда",
-  potion: "Зелья",
-  alcohol: "Алкоголь",
-  flask: "Склянки",
-  poison: "Яды",
-  trap: "Ловушки",
-  misc: "Прочее",
-  "еда": "Еда",
-  "зелье": "Зелья",
-  "зелья": "Зелья",
-  "алкоголь": "Алкоголь",
-  "склянка": "Склянки",
-  "склянки": "Склянки",
-  "яд": "Яды",
-  "яды": "Яды",
-  "ловушка": "Ловушки",
-  "ловушки": "Ловушки"
+  food: "Еда", potion: "Зелья", alcohol: "Алкоголь", flask: "Склянки", poison: "Яды", trap: "Ловушки", misc: "Прочее",
+  "еда": "Еда", "зелье": "Зелья", "зелья": "Зелья", "алкоголь": "Алкоголь", "склянка": "Склянки", "склянки": "Склянки", "яд": "Яды", "яды": "Яды", "ловушка": "Ловушки", "ловушки": "Ловушки"
 };
 
 const GEAR_KIND_FOLDERS = {
-  tool: "Инструменты",
-  tools: "Инструменты",
-  treasure: "Сокровища",
-  find: "Находки",
-  finding: "Находки",
-  belt: "Предметы пояса",
-  gear: "Прочее",
-  misc: "Прочее",
-  "инструмент": "Инструменты",
-  "инструменты": "Инструменты",
-  "сокровище": "Сокровища",
-  "сокровища": "Сокровища",
-  "находка": "Находки",
-  "находки": "Находки",
-  "пояс": "Предметы пояса"
+  tool: "Инструменты", tools: "Инструменты", treasure: "Сокровища", find: "Находки", finding: "Находки", belt: "Предметы пояса", gear: "Прочее", misc: "Прочее",
+  "инструмент": "Инструменты", "инструменты": "Инструменты", "сокровище": "Сокровища", "сокровища": "Сокровища", "находка": "Находки", "находки": "Находки", "пояс": "Предметы пояса"
 };
 
 async function loadJson(path) {
@@ -89,13 +61,9 @@ function defaultItemSystem(type, source, extra = {}) {
 
 function defaultActorSystem(source, kind) {
   return {
-    stats: {
-      pow: { value: 3, half: 0 }, grace: { value: 3, half: 0 }, shell: { value: 3, half: 0 }, insight: { value: 3, half: 0 }
-    },
-    pools: {
-      heart: { value: 7, max: 7 }, soul: { value: 3, max: 3 }, stam: { value: 3, max: 3 },
-      satiety: { value: 0, max: 20 }, supplies: { value: 0, max: 0 }, essence: { value: 0, max: 0 }
-    },
+    stats: { pow: { value: 3, half: 0 }, grace: { value: 3, half: 0 }, shell: { value: 3, half: 0 }, insight: { value: 3, half: 0 } },
+    pools: { heart: { value: 7, max: 7 }, soul: { value: 3, max: 3 }, stam: { value: 3, max: 3 }, satiety: { value: 0, max: 20 }, supplies: { value: 0, max: 0 }, essence: { value: 0, max: 0 } },
+    builder: { sizeTemplate: "medium" },
     meta: { speed: 6, size: "medium", hunger: 4, fright: 1, appeal: 1, marks: { value: 3, max: 3 }, absorption: 0, notes: `Импортировано из ${source}. Статблок требуется сверить и доавтоматизировать.` },
     source,
     kind
@@ -108,9 +76,8 @@ function normalizeItems(raw) {
   const result = [];
   for (const [type, names] of Object.entries(raw.items ?? {})) {
     for (const entry of names) {
-      if (typeof entry === "string") {
-        result.push({ name: entry, type, system: defaultItemSystem(type, source) });
-      } else {
+      if (typeof entry === "string") result.push({ name: entry, type, system: defaultItemSystem(type, source) });
+      else {
         const itemType = entry.type ?? type;
         const base = defaultItemSystem(itemType, entry.source ?? source, entry);
         const system = foundry.utils.mergeObject(base, entry.system ?? {}, { inplace: false });
@@ -134,14 +101,11 @@ function normalizeActors(raw, kind) {
   });
 }
 
-function normalizedKind(value) {
-  return String(value ?? "").trim().toLowerCase();
-}
+function normalizedKind(value) { return String(value ?? "").trim().toLowerCase(); }
 
 function inferConsumableFolder(item) {
   const kind = normalizedKind(item.system?.kind);
   if (CONSUMABLE_KIND_FOLDERS[kind]) return CONSUMABLE_KIND_FOLDERS[kind];
-
   const name = item.name.toLowerCase();
   if (/(мясо|растен|гриб|па[её]к|нектар|мед|амброз)/i.test(name)) return "Еда";
   if (/(брага|вино|пиво|эль|виски|медовуха|бренди|сидр)/i.test(name)) return "Алкоголь";
@@ -152,7 +116,6 @@ function inferConsumableFolder(item) {
 function inferGearFolder(item) {
   const kind = normalizedKind(item.system?.kind);
   if (GEAR_KIND_FOLDERS[kind]) return GEAR_KIND_FOLDERS[kind];
-
   const name = item.name.toLowerCase();
   if (/(кирка|лом|плащ|удочка|книга|набор|молот|пила|прибор)/i.test(name)) return "Инструменты";
   if (/(бальзам|бинты|заплатка|воск|брус|руда|лепесток|осколок|ячейка)/i.test(name)) return "Находки";
@@ -167,68 +130,64 @@ function itemFolderPath(item) {
   return path;
 }
 
+function npcSubfolder(name) {
+  if (/(Пчела|Оса|Жесткокрыл|Бабочка|Муравей-солдат)/i.test(name)) return "Оукшейд — хранители порядка";
+  if (/(Богомол|Улитка|Термит|Таракан|Ткач-охотник|Мотыл)/i.test(name)) return "Оукшейд — дивные видения";
+  if (/(Цикада|Скорпион|Саранча|Серебряный муравей|Пыль|пылев|лич)/i.test(name)) return "Пустоши и Пыль";
+  if (/Оболочка|Драколич/i.test(name)) return "Оболочки и нежить";
+  if (/(Мокрица|клана Жуков|Галловый|Осквернитель|Пиявка|Москит|Клещ|Болотн|Старейша)/i.test(name)) return "Болота и кланы";
+  if (/(ассасин|Эн’Расео|Со’Расео|Призрак)/i.test(name)) return "Ассасины и духи";
+  return "Прочие НИПы";
+}
+
+function creatureSubfolder(name) {
+  if (/(Ползуны|Топтуны|Мстекрыл|Жужжал|Аспид|бальдр|Мшист|Лишайник|Живень)/i.test(name)) return "Адаптация Халлоунеста";
+  if (/(Обил|Ворокрыл|Носложук|Трамаход|Корахват|Громожук|Статики|Панцирекруг|Друлит|Таптик|Мохов)/i.test(name)) return "Оукшейд — Великое Древо";
+  if (/(Плеваки|Камнескоки|Пружехвост|Бронежук|кристалопанцир|Эстид|Сниффид)/i.test(name)) return "Зона Оукшейда";
+  if (/(Владыки пустоши|Клятвошип|Смертоброс|Пылев|Жутестрах|Тератера|Пустош)/i.test(name)) return "Пустоши и Пыль";
+  if (/(Чурл|Валдунид|Неразлучник|Вриг|Флаффер|Булавочник|Стаджер|Спривер|Бисерокрыл|Узлокрыл)/i.test(name)) return "Дикие земли";
+  if (/(Флурф|Холможук|слизн|Тактик|Даорокрыл|Трюфел|Комар|Грузил|Стрекоз|Луна|Кукит|Струйщик|Конькоспин|Глулб)/i.test(name)) return "Рощи и воды";
+  if (/(Гниль|Клякс|Пусточерв|Тени|Кракен|Хлюпк|Светопийц|Меридиен|Гробонос|Накопитель|Забытые|Пустоторожд)/i.test(name)) return "Гниль, Пустота и глубины";
+  return "Прочие существа";
+}
+
 function actorFolderPath(root, actor) {
-  const source = String(actor.system?.source ?? "").trim();
-  if (!source) return [root, "Без источника"];
-  return [root, source];
+  const source = String(actor.system?.source ?? "").trim() || "Без источника";
+  const kind = actor.system?.kind;
+  const subfolder = kind === "npc" ? npcSubfolder(actor.name) : creatureSubfolder(actor.name);
+  return [root, source, subfolder];
 }
 
-function folderParentId(folder) {
-  return folder.folder?.id ?? folder.parent?.id ?? folder._source?.folder ?? null;
-}
-
-function findFolder(documentName, name, parentId) {
-  return game.folders.find(f =>
-    f.type === documentName &&
-    f.name === name &&
-    (folderParentId(f) ?? null) === (parentId ?? null)
-  );
-}
+function folderParentId(folder) { return folder.folder?.id ?? folder.parent?.id ?? folder._source?.folder ?? null; }
+function findFolder(documentName, name, parentId) { return game.folders.find(f => f.type === documentName && f.name === name && (folderParentId(f) ?? null) === (parentId ?? null)); }
 
 async function ensureFolderPath(documentName, names, cache = new Map()) {
   const cleanNames = names.filter(Boolean);
   let parent = null;
-
   for (const name of cleanNames) {
     const parentId = parent?.id ?? null;
     const key = `${documentName}:${parentId ?? "root"}:${name}`;
     let folder = cache.get(key) ?? findFolder(documentName, name, parentId);
-
-    if (!folder) {
-      folder = await Folder.create({
-        name,
-        type: documentName,
-        folder: parentId,
-        sorting: "a"
-      });
-    }
-
+    if (!folder) folder = await Folder.create({ name, type: documentName, folder: parentId, sorting: "a" });
     cache.set(key, folder);
     parent = folder;
   }
-
   return parent;
 }
 
 async function moveExistingDocuments(documentName, docs, folderForDoc, existingByKey, folderCache) {
   if (!folderForDoc) return 0;
-
   const updates = [];
   for (const doc of docs) {
     const existing = existingByKey.get(sourceKey(doc));
     if (!existing) continue;
-
     const path = folderForDoc(doc);
     if (!path?.length) continue;
-
     const folder = await ensureFolderPath(documentName, path, folderCache);
     if (existing.folder?.id === folder.id) continue;
-
     updates.push({ _id: existing.id, folder: folder.id });
   }
-
   if (!updates.length) return 0;
-
   const cls = documentName === "Actor" ? Actor : Item;
   await cls.updateDocuments(updates);
   return updates.length;
@@ -240,35 +199,20 @@ async function createMissingDocuments(documentName, docs, { folderName, folderFo
   const existingByKey = new Map(collection.map(d => [d.getFlag("hk-rpg", "sourceKey") ?? sourceKey(d), d]));
   const pending = [];
   const folderCache = new Map();
-
-  const makePath = doc => {
-    if (folderForDoc) return folderForDoc(doc);
-    if (folderName) return [folderName];
-    return null;
-  };
+  const makePath = doc => folderForDoc ? folderForDoc(doc) : (folderName ? [folderName] : null);
 
   for (const doc of docs) {
     const key = sourceKey(doc);
     if (existingByKey.has(key)) continue;
-
-    const copy = foundry.utils.mergeObject(foundry.utils.deepClone(doc), {
-      flags: { "hk-rpg": { sourceKey: key, importedAt: new Date().toISOString() } }
-    }, { inplace: false });
-
+    const copy = foundry.utils.mergeObject(foundry.utils.deepClone(doc), { flags: { "hk-rpg": { sourceKey: key, importedAt: new Date().toISOString() } } }, { inplace: false });
     const path = makePath(doc);
-    if (path?.length) {
-      const folder = await ensureFolderPath(documentName, path, folderCache);
-      copy.folder = folder.id;
-    }
-
+    if (path?.length) copy.folder = (await ensureFolderPath(documentName, path, folderCache)).id;
     pending.push(copy);
   }
 
   let moved = 0;
   if (organizeExisting) moved = await moveExistingDocuments(documentName, docs, makePath, existingByKey, folderCache);
-
   if (pending.length) await cls.createDocuments(pending, { keepId: false });
-
   return { created: pending.length, skipped: docs.length - pending.length, moved };
 }
 
@@ -285,7 +229,6 @@ export const HKContentImporter = {
     ui.notifications.info(`HKRPG: предметы и правила импортированы. Создано ${result.created}, пропущено ${result.skipped}, перемещено ${result.moved}.`);
     return result;
   },
-
   async importCreatures() {
     if (!game.user.isGM) return ui.notifications.warn("Импорт HKRPG доступен только Мастеру.");
     const actors = normalizeActors(await loadJson("actors-creatures.json"), "creature");
@@ -293,7 +236,6 @@ export const HKContentImporter = {
     ui.notifications.info(`HKRPG: существа импортированы. Создано ${result.created}, пропущено ${result.skipped}, перемещено ${result.moved}.`);
     return result;
   },
-
   async importNpcs() {
     if (!game.user.isGM) return ui.notifications.warn("Импорт HKRPG доступен только Мастеру.");
     const actors = normalizeActors(await loadJson("actors-npcs.json"), "npc");
@@ -301,7 +243,6 @@ export const HKContentImporter = {
     ui.notifications.info(`HKRPG: НИПы импортированы. Создано ${result.created}, пропущено ${result.skipped}, перемещено ${result.moved}.`);
     return result;
   },
-
   async organizeContent() {
     if (!game.user.isGM) return ui.notifications.warn("Организация HKRPG доступна только Мастеру.");
     const items = await this.importItems();
@@ -312,7 +253,6 @@ export const HKContentImporter = {
     console.log("HKRPG | content organize", summary);
     return summary;
   },
-
   async importAll() {
     if (!game.user.isGM) return ui.notifications.warn("Импорт HKRPG доступен только Мастеру.");
     const items = await this.importItems();
@@ -320,12 +260,7 @@ export const HKContentImporter = {
     const npcs = await this.importNpcs();
     const summary = { items, creatures, npcs };
     console.log("HKRPG | content import", summary);
-    ChatMessage.create({
-      content: `<h2>HKRPG: импорт контента</h2>
-        <p><b>Предметы и правила:</b> создано ${items.created}, пропущено ${items.skipped}, перемещено ${items.moved}</p>
-        <p><b>Монстры и существа:</b> создано ${creatures.created}, пропущено ${creatures.skipped}, перемещено ${creatures.moved}</p>
-        <p><b>НИПы:</b> создано ${npcs.created}, пропущено ${npcs.skipped}, перемещено ${npcs.moved}</p>`
-    });
+    ChatMessage.create({ content: `<h2>HKRPG: импорт контента</h2><p><b>Предметы и правила:</b> создано ${items.created}, пропущено ${items.skipped}, перемещено ${items.moved}</p><p><b>Монстры и существа:</b> создано ${creatures.created}, пропущено ${creatures.skipped}, перемещено ${creatures.moved}</p><p><b>НИПы:</b> создано ${npcs.created}, пропущено ${npcs.skipped}, перемещено ${npcs.moved}</p>` });
     return summary;
   }
 };
