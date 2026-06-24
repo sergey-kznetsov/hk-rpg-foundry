@@ -18,10 +18,13 @@ export class HKActor extends Actor {
     s.derived.beltSlots = Math.floor(shell);
     s.derived.techSlots = Math.floor(insight);
 
-    // DR from armor (MVP)
     const armor = HK.getEquippedArmor(this);
     const durability = Number(armor?.system?.defense?.durability?.value ?? 0);
     const dr = Number(armor?.system?.defense?.dr ?? 0);
     s.derived.dr = (armor && durability > 0) ? dr : 0;
+
+    const baseSpeed = Number(s.meta?.speed ?? 0);
+    const speedDelta = HK.sumConditionModifier(this, "speedDelta");
+    s.derived.speed = Math.max(0, baseSpeed + speedDelta);
   }
 }
