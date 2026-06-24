@@ -7,11 +7,14 @@ import {
   HKArmorSheet,
   HKGenericItemSheet
 } from "./sheets/item-sheets.js";
+import { HKContentImporter } from "./content/importer.js";
 
 export const HK = {
   itemTypes: [
     "weapon",
+    "shield",
     "armor",
+    "focus",
     "condition",
     "trait",
     "path",
@@ -24,7 +27,9 @@ export const HK = {
 
   itemTypeLabels: {
     weapon: "HKRPG.Weapon",
+    shield: "HKRPG.Shield",
     armor: "HKRPG.Armor",
+    focus: "HKRPG.Focus",
     condition: "HKRPG.Condition",
     trait: "HKRPG.Trait",
     path: "HKRPG.Path",
@@ -34,6 +39,8 @@ export const HK = {
     consumable: "HKRPG.Consumable",
     gear: "HKRPG.Gear"
   },
+
+  content: HKContentImporter,
 
   distancePenalty(extraSquares) {
     return Math.max(0, Math.floor(Number(extraSquares) || 0));
@@ -107,6 +114,47 @@ export const HK = {
     return actor.items
       .filter(i => i.type === "condition")
       .reduce((total, condition) => total + Number(condition.system?.modifiers?.[key] ?? 0), 0);
+  },
+
+  async recoverStamina(actor) {
+    const max = Number(actor.system?.pools?.stam?.max ?? 0);
+    await actor.update({ "system.pools.stam.value": max, "system.combat.reactionAvailable": true });
+    return max;
+  },
+
+  async spendSoul(actor, amount = 1) {
+    const current = Number(actor.system?.pools?.soul?.value ?? 0);
+    const cost = Math.max(0, Number(amount) || 0);
+    if (current < cost) return false;
+    await actor.update({ "system.pools.soul.value": current - cost });
+    return true;
+  },
+
+  async focusSoul(actor, { soulCost = 1, heal = 1 } = {}) {
+    const ok = await HK.spendSoul(actor, soulCost);
+    if (!ok) return ui.notifications.warn("Недостаточно Души для Фокусировки.");
+    const hp = Number(actor.system?.pools?.heart?.value ?? 0);
+    const max = Number(actor.system?.pools?.heart?.max ?? 0);
+    await actor.update({ "system.pools.heart.value": Math.min(max, hp + heal) });
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<b>${actor.name}</b> фокусирует Душу и восстанавливает ${heal} Сердце.` });
+    return true;
+  },
+
+  async rest(actor, { long = false } = {}) {
+    const heart = actor.system?.pools?.heart ?? {};
+    const soul = actor.system?.pools?.soul ?? {};
+    const satiety = actor.system?.pools?.satiety ?? {};
+    const hunger = Math.max(10, Number(actor.system?.meta?.hunger ?? 10));
+    const heartGain = long ? Number(heart.max ?? 0) : 1;
+    const updates = {
+      "system.pools.heart.value": Math.min(Number(heart.max ?? 0), Number(heart.value ?? 0) + heartGain),
+      "system.pools.soul.value": Number(soul.max ?? 0),
+      "system.pools.satiety.value": Number(satiety.value ?? 0) - hunger,
+      "system.combat.reactionAvailable": true
+    };
+    await actor.update(updates);
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<b>${actor.name}</b> отдыхает. Душа восстановлена, Сытость уменьшена на ${hunger}.` });
+    return updates;
   }
 };
 
@@ -125,7 +173,17 @@ Hooks.once("init", () => {
   Items.registerSheet("hk-rpg", HKWeaponSheet, { types: ["weapon"], makeDefault: true });
   Items.registerSheet("hk-rpg", HKArmorSheet, { types: ["armor"], makeDefault: true });
   Items.registerSheet("hk-rpg", HKGenericItemSheet, {
-    types: ["condition", "trait", "path", "art", "spell", "charm", "consumable", "gear"],
+    types: ["shield", "focus", "condition", "trait", "path", "art", "spell", "charm", "consumable", "gear"],
     makeDefault: true
   });
+});
+
+Hooks.once("ready", () => {
+  game.hk.importContent = () => HKContentImporter.importAll();
+  game.hk.importItems = () => HKContentImporter.importItems();
+  game.hk.importCreatures = () => HKContentImporter.importCreatures();
+  game.hk.importNpcs = () => HKContentImporter.importNpcs();
+  game.hk.recoverStamina = actor => HK.recoverStamina(actor);
+  game.hk.focusSoul = (actor, options) => HK.focusSoul(actor, options);
+  game.hk.rest = (actor, options) => HK.rest(actor, options);
 });
