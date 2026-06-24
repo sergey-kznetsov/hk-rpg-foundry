@@ -7,6 +7,43 @@
     </div>
   </header>
 
+  <section class="box hk-calculator">
+    <h3>{{localize "HKRPG.CharacterCalculator"}}</h3>
+    <div class="hk-button-row">
+      <label>{{localize "HKRPG.SizeTemplate"}}</label>
+      <select name="system.builder.sizeTemplate">
+        {{#each sizeOptions as |option|}}
+          <option value="{{option.key}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>
+        {{/each}}
+      </select>
+      <button type="button" class="hk-apply-size-template">{{localize "HKRPG.ApplySizeTemplate"}}</button>
+      <button type="button" class="hk-sync-maximums">{{localize "HKRPG.SyncMaximums"}}</button>
+      <button type="button" class="hk-recover-stamina">{{localize "HKRPG.RecoverStamina"}}</button>
+      <button type="button" class="hk-focus-soul">{{localize "HKRPG.FocusSoul"}}</button>
+      <button type="button" class="hk-rest-short">{{localize "HKRPG.Rest"}}</button>
+      <button type="button" class="hk-rest-long">{{localize "HKRPG.LongRest"}}</button>
+    </div>
+    <div class="hk-calc-grid">
+      <div><b>{{localize "HKRPG.TraitsUsed"}}</b>: {{system.derived.character.traitCount}}/{{system.derived.character.traitLimit}} <span class="hk-muted">(+{{system.derived.character.subtraitCount}} {{localize "HKRPG.SubtraitsShort"}})</span></div>
+      <div><b>{{localize "HKRPG.Hunger"}}</b>: {{system.derived.character.hunger}}/{{system.derived.character.hungerMax}}</div>
+      <div><b>{{localize "HKRPG.Marks"}}</b>: {{system.derived.character.marksUsed}}/{{system.derived.character.marksMax}} <span class="hk-muted">{{localize "HKRPG.FreeMarks"}}: {{system.derived.character.marksFree}}</span></div>
+      <div><b>{{localize "HKRPG.TechSlots"}}</b>: {{system.derived.character.usedTechSlots}}/{{system.derived.character.techSlots}}</div>
+      <div><b>{{localize "HKRPG.Weight"}}</b>: {{system.derived.character.carriedWeight}}/{{system.derived.character.carry}} <span class="hk-muted">{{localize "HKRPG.HardLoad"}}: {{system.derived.character.hardLoad}}</span></div>
+      <div><b>{{localize "HKRPG.PathRanks"}}</b>: {{system.derived.character.pathRanks}} <span class="hk-muted">{{localize "HKRPG.Martial"}} {{system.derived.character.martialRanks}} / {{localize "HKRPG.Mystic"}} {{system.derived.character.mysticRanks}}</span></div>
+      <div><b>{{localize "HKRPG.SatietyMaxCalc"}}</b>: {{system.derived.character.satietyMax}}</div>
+      <div><b>{{localize "HKRPG.SatietyLossRest"}}</b>: {{system.derived.character.satietyLoss}}</div>
+    </div>
+    {{#if hasCharacterWarnings}}
+      <div class="hk-warnings">
+        {{#each characterWarnings as |warning|}}
+          <div class="hk-warning">{{warning}}</div>
+        {{/each}}
+      </div>
+    {{else}}
+      <div class="hk-ok">{{localize "HKRPG.CharacterOk"}}</div>
+    {{/if}}
+  </section>
+
   <section class="grid-2">
     <div class="box">
       <h3>{{localize "HKRPG.Stats"}}</h3>
@@ -167,11 +204,11 @@
   <section class="grid-2">
     <div class="box items">
       <h3>{{localize "HKRPG.Art"}}</h3>
-      {{#each arts as |it|}}<div class="item" data-item-id="{{it._id}}"><span>{{it.name}} — {{localize "HKRPG.Rank"}} {{it.system.rank}}</span><span><button type="button" class="hk-use-tech" data-item-id="{{it._id}}">{{localize "HKRPG.Use"}}</button><a class="item-edit"><i class="fas fa-edit"></i></a><a class="item-delete"><i class="fas fa-trash"></i></a></span></div>{{/each}}
+      {{#each arts as |it|}}<div class="item" data-item-id="{{it._id}}"><span>{{it.name}} — {{localize "HKRPG.Rank"}} {{it.system.rank}}</span><span><button type="button" class="hk-toggle-prepared" data-item-id="{{it._id}}">{{#if it.system.prepared}}{{localize "HKRPG.Prepared"}}{{else}}{{localize "HKRPG.NotPrepared"}}{{/if}}</button><button type="button" class="hk-use-tech" data-item-id="{{it._id}}">{{localize "HKRPG.Use"}}</button><a class="item-edit"><i class="fas fa-edit"></i></a><a class="item-delete"><i class="fas fa-trash"></i></a></span></div>{{/each}}
     </div>
     <div class="box items">
       <h3>{{localize "HKRPG.Spell"}}</h3>
-      {{#each spells as |it|}}<div class="item" data-item-id="{{it._id}}"><span>{{it.name}} — {{localize "HKRPG.SoulCost"}} {{it.system.cost.soul}}</span><span><button type="button" class="hk-use-tech" data-item-id="{{it._id}}">{{localize "HKRPG.Use"}}</button><a class="item-edit"><i class="fas fa-edit"></i></a><a class="item-delete"><i class="fas fa-trash"></i></a></span></div>{{/each}}
+      {{#each spells as |it|}}<div class="item" data-item-id="{{it._id}}"><span>{{it.name}} — {{localize "HKRPG.SoulCost"}} {{it.system.cost.soul}}</span><span><button type="button" class="hk-toggle-prepared" data-item-id="{{it._id}}">{{#if it.system.prepared}}{{localize "HKRPG.Prepared"}}{{else}}{{localize "HKRPG.NotPrepared"}}{{/if}}</button><button type="button" class="hk-use-tech" data-item-id="{{it._id}}">{{localize "HKRPG.Use"}}</button><a class="item-edit"><i class="fas fa-edit"></i></a><a class="item-delete"><i class="fas fa-trash"></i></a></span></div>{{/each}}
     </div>
   </section>
 
