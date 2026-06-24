@@ -6,8 +6,8 @@ export class HKBugSheet extends ActorSheet {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["hk", "sheet", "actor"],
       template: "systems/hk-rpg/templates/actor-bug-sheet.hbs",
-      width: 880,
-      height: 860
+      width: 920,
+      height: 900
     });
   }
 
@@ -30,6 +30,10 @@ export class HKBugSheet extends ActorSheet {
       type,
       label: game.i18n.localize(HK.itemTypeLabels[type] ?? type)
     }));
+    const activeSize = data.system?.derived?.character?.sizeKey ?? data.system?.builder?.sizeTemplate ?? "medium";
+    data.sizeOptions = HK.sizeTemplateOptions().map(option => ({ ...option, selected: option.key === activeSize }));
+    data.characterWarnings = data.system?.derived?.character?.warnings ?? [];
+    data.hasCharacterWarnings = data.characterWarnings.length > 0;
     return data;
   }
 
@@ -45,6 +49,31 @@ export class HKBugSheet extends ActorSheet {
       const statKey = ev.currentTarget.dataset.stat;
       const skillKey = ev.currentTarget.dataset.skill;
       await this._rollSkill(statKey, skillKey);
+    });
+
+    html.find(".hk-apply-size-template").on("click", async () => {
+      const key = html.find("[name='system.builder.sizeTemplate']")?.val?.() ?? "medium";
+      await HK.applySizeTemplate(this.actor, key);
+    });
+
+    html.find(".hk-sync-maximums").on("click", async () => {
+      await HK.syncActorMaximums(this.actor);
+    });
+
+    html.find(".hk-recover-stamina").on("click", async () => {
+      await HK.recoverStamina(this.actor);
+    });
+
+    html.find(".hk-focus-soul").on("click", async () => {
+      await HK.focusSoul(this.actor);
+    });
+
+    html.find(".hk-rest-short").on("click", async () => {
+      await HK.rest(this.actor, { long: false });
+    });
+
+    html.find(".hk-rest-long").on("click", async () => {
+      await HK.rest(this.actor, { long: true });
     });
 
     html.find(".hk-attack").on("click", async (ev) => {
@@ -67,6 +96,12 @@ export class HKBugSheet extends ActorSheet {
     html.find(".hk-toggle-equip").on("click", async (ev) => {
       const item = this.actor.items.get(ev.currentTarget.dataset.itemId);
       await HK.toggleEquip(item);
+    });
+
+    html.find(".hk-toggle-prepared").on("click", async (ev) => {
+      const item = this.actor.items.get(ev.currentTarget.dataset.itemId);
+      if (!item) return;
+      await item.update({ "system.prepared": !item.system?.prepared });
     });
 
     html.find(".hk-create-item").on("click", async (ev) => {
