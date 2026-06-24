@@ -115,8 +115,14 @@
     <div class="row"><label>{{localize "HKRPG.Quality"}}</label><input type="number" name="system.quality" value="{{system.quality}}"/></div>
     <div class="row"><label>{{localize "HKRPG.Weight"}}</label><input type="number" name="system.weight" value="{{system.weight}}"/></div>
     <div class="row"><label>{{localize "HKRPG.Quantity"}}</label><input type="number" name="system.quantity" value="{{system.quantity}}"/></div>
+    <div class="row"><label>{{localize "HKRPG.Equipped"}}</label><input type="checkbox" name="system.equipped" {{checked system.equipped}}/></div>
   </section>
   {{/if}}
+
+  <section class="box">
+    <h3>{{localize "HKRPG.EffectsJson"}}</h3>
+    <textarea name="system.effectsJson">{{effectsJson}}</textarea>
+  </section>
 
   <section class="box">
     <h3>{{localize "HKRPG.Description"}}</h3>
