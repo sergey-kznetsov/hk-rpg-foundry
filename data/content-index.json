@@ -1,0 +1,15 @@
+[
+  {
+    "version": "0.3.0",
+    "sources": [
+      "The Unofficial Hollow Knight RPG RUS v1.8",
+      "Журнал Скальда",
+      "Записки Дуэлянта"
+    ],
+    "datasets": [
+      { "path": "data/items-core.json", "document": "Item", "count": 238 },
+      { "path": "data/actors-creatures.json", "document": "Actor", "count": 90 },
+      { "path": "data/actors-npcs.json", "document": "Actor", "count": 74 }
+    ]
+  }
+]
