@@ -4,6 +4,7 @@ import { calculateEffectiveSystem } from "../mechanics/effects.js";
 
 const TECH_TYPES = new Set(["art", "spell"]);
 const WEIGHT_TYPES = new Set(["weapon", "shield", "armor", "focus", "consumable", "gear"]);
+const ENCUMBRANCE_STATS = new Set(["pow", "grace"]);
 
 function n(value, fallback = 0) {
   const parsed = Number(value);
@@ -32,14 +33,15 @@ function sizeKey(system) {
   return "medium";
 }
 
-function buildWarnings({ system, traitCount, hunger, hungerMax, usedMarks, marksMax, usedTechSlots, techSlots, carriedWeight, carry, hardLoad }) {
+function buildWarnings({ system, traitCount, hunger, hungerMax, usedMarks, marksMax, usedTechSlots, techSlots, carriedWeight, carry, hardLoad, encumbrance }) {
   const warnings = [];
   if (traitCount > 7) warnings.push(`Черты: ${traitCount}/7. Основных черт больше допустимого лимита.`);
   if (hunger > hungerMax) warnings.push(`Голод: ${hunger}/${hungerMax}. Превышен максимум шаблона размера.`);
   if (usedMarks > marksMax) warnings.push(`Метки: занято ${usedMarks}/${marksMax}. Надето слишком много амулетов.`);
   if (usedTechSlots > techSlots) warnings.push(`Ячейки техник: подготовлено ${usedTechSlots}/${techSlots}. Слишком много Искусств/Тайн.`);
   if (carriedWeight > hardLoad) warnings.push(`Вес: ${carriedWeight}/${hardLoad}. Жук не может нести больше удвоенной Нагрузки.`);
-  else if (carriedWeight > carry) warnings.push(`Вес: ${carriedWeight}/${carry}. Перегруз: штраф -1 к Мощи/Грации и +1 Выносливость к действиям по правилам.`);
+  else if (carriedWeight > carry) warnings.push(`Вес: ${carriedWeight}/${carry}. Перегруз: -1 куб к проверкам Мощи/Грации и +1 Выносливость к действиям.`);
+  if (encumbrance === "blocked") warnings.push("Вес выше предельной нагрузки: перед боевым тестом разгрузите персонажа или исправьте снаряжение.");
   const satiety = n(system?.pools?.satiety?.value, 0);
   if (satiety < -100) warnings.push("Сытость ниже -100: жук мёртв от голода и истощения.");
   else if (satiety < -50) warnings.push("Сытость от -50 до -100: -1 ко всем Главным Характеристикам и ослабленное восстановление.");
@@ -79,14 +81,6 @@ export class HKActor extends Actor {
     const speedDelta = HK.sumConditionModifier(this, "speedDelta");
     s.derived.speed = Math.max(0, baseSpeed + speedDelta);
 
-    const equippedMarks = this.items
-      .filter(i => i.type === "charm" && i.system?.equipped === true)
-      .reduce((total, charm) => total + n(charm.system?.marks, 0), 0);
-    const marksMax = n(s.effective?.meta?.marks?.max ?? s.meta?.marks?.max, 0);
-    s.derived.equippedMarks = equippedMarks;
-    s.derived.freeMarks = Math.max(0, marksMax - equippedMarks);
-    s.derived.activeEffects = Array.isArray(s.effective?.effects) ? s.effective.effects.length : 0;
-
     const traits = this.items.filter(i => i.type === "trait");
     const mainTraits = traits.filter(i => !bool(i.system?.isSubtrait));
     const pathRanks = this.items
@@ -99,6 +93,14 @@ export class HKActor extends Actor {
       .filter(i => i.type === "path" && i.system?.category === "mystic")
       .reduce((total, path) => total + Math.max(0, n(path.system?.rank, 0)), 0);
 
+    const equippedMarks = this.items
+      .filter(i => i.type === "charm" && i.system?.equipped === true)
+      .reduce((total, charm) => total + n(charm.system?.marks, 0), 0);
+    const marksMax = n(s.effective?.meta?.marks?.max ?? s.meta?.marks?.max, 0);
+    s.derived.equippedMarks = equippedMarks;
+    s.derived.freeMarks = Math.max(0, marksMax - equippedMarks);
+    s.derived.activeEffects = Array.isArray(s.effective?.effects) ? s.effective.effects.length : 0;
+
     const preparedTech = this.items.filter(i => TECH_TYPES.has(i.type) && i.system?.prepared === true);
     const preparedArts = preparedTech.filter(i => i.type === "art").length;
     const preparedSpells = preparedTech.filter(i => i.type === "spell").length;
@@ -107,11 +109,14 @@ export class HKActor extends Actor {
     const carriedWeight = this.items.reduce((total, item) => total + itemWeight(item), 0);
     const hardLoad = Math.max(0, carry * 2);
     const encumbrance = carriedWeight > hardLoad ? "blocked" : (carriedWeight > carry ? "overloaded" : "ok");
+    const encumbrancePenalty = encumbrance === "ok" ? 0 : -1;
+    const staminaSurcharge = encumbrance === "ok" ? 0 : 1;
 
     const key = sizeKey(s);
     const template = HK.sizeTemplates?.[key] ?? HK.sizeTemplates?.medium;
     const hunger = n(s.effective?.meta?.hunger ?? s.meta?.hunger, 0);
-    const hungerMax = n(template?.hungerMax, 20);
+    const hungerMax = n(template?.meta?.hungerMax, 20);
+    const hungerStart = n(template?.meta?.hungerStart, 4);
     const satietyMax = Math.max(10, hunger);
     const satietyLoss = Math.max(10, hunger);
 
@@ -134,15 +139,20 @@ export class HKActor extends Actor {
       carry,
       hardLoad,
       encumbrance,
+      encumbrancePenalty,
+      staminaSurcharge,
       hunger,
       hungerMax,
-      hungerStart: n(template?.hungerStart, 4),
+      hungerStart,
       satietyMax,
       satietyLoss,
       marksUsed: equippedMarks,
       marksMax,
       marksFree: Math.max(0, marksMax - equippedMarks),
-      warnings: buildWarnings({ system: s, traitCount: mainTraits.length, hunger, hungerMax, usedMarks: equippedMarks, marksMax, usedTechSlots, techSlots, carriedWeight, carry, hardLoad })
+      warnings: buildWarnings({ system: s, traitCount: mainTraits.length, hunger, hungerMax, usedMarks: equippedMarks, marksMax, usedTechSlots, techSlots, carriedWeight, carry, hardLoad, encumbrance })
     };
+
+    s.derived.encumbrancePenalty = encumbrancePenalty;
+    s.derived.staminaSurcharge = staminaSurcharge;
   }
 }
