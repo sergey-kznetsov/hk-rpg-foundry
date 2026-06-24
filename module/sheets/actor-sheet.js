@@ -67,9 +67,10 @@ export class HKBugSheet extends ActorSheet {
     });
 
     html.find(".hk-sync-token-size").on("click", async () => {
-      const width = Number(html.find("[name='system.token.width']")?.val?.() ?? this.actor.system?.token?.width ?? 1);
-      const height = Number(html.find("[name='system.token.height']")?.val?.() ?? this.actor.system?.token?.height ?? width);
-      await HK.setActorTokenSize(this.actor, { width, height, updateActiveTokens: true });
+      const width = Math.max(0.25, Number(html.find("[name='system.token.width']")?.val?.() ?? this.actor.system?.token?.width ?? 1));
+      const height = Math.max(0.25, Number(html.find("[name='system.token.height']")?.val?.() ?? this.actor.system?.token?.height ?? width));
+      if (HK.setActorTokenSize) await HK.setActorTokenSize(this.actor, { width, height, updateActiveTokens: true });
+      else ui.notifications.warn("HKRPG: модуль изменения размера токена ещё не загружен.");
     });
 
     html.find(".hk-create-item").on("click", async ev => {
@@ -95,7 +96,6 @@ export class HKBugSheet extends ActorSheet {
     const dice = HK.effectiveStat(this.actor, statKey);
     const rerollFromHalf = HK.effectiveStatHalf(this.actor, statKey) ? 1 : 0;
     const speaker = ChatMessage.getSpeaker({ actor: this.actor });
-
     const { roll } = await HK.rollPool({ dice, speaker, flavor: `Проверка: ${HK.statLabels[statKey] ?? statKey} (${dice}d6)` });
     if (rerollFromHalf > 0) await HK.rerollOneFailureFromHalf({ roll, speaker, label: HK.statLabels[statKey] ?? statKey });
   }
@@ -105,7 +105,6 @@ export class HKBugSheet extends ActorSheet {
     const skillDice = HK.effectiveSkill(this.actor, skillKey);
     const dice = statDice + skillDice;
     const speaker = ChatMessage.getSpeaker({ actor: this.actor });
-
     const { roll } = await HK.rollPool({
       dice,
       speaker,
