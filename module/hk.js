@@ -17,6 +17,33 @@ import {
 import { HKContentImporter } from "./content/importer.js";
 
 export const HK = {
+  sizeTemplates: {
+    small: {
+      key: "small",
+      label: "Мелкий",
+      size: "small",
+      stats: { pow: 2, insight: 3, shell: 3, grace: 4 },
+      pools: { heart: 6, stam: 3, soul: 3 },
+      meta: { speed: 7, hunger: -1, hungerStart: -1, hungerMax: 15, fright: 1, appeal: 1.5, marks: 3 }
+    },
+    medium: {
+      key: "medium",
+      label: "Средний",
+      size: "medium",
+      stats: { pow: 3, insight: 3, shell: 3, grace: 3 },
+      pools: { heart: 7, stam: 3, soul: 3 },
+      meta: { speed: 6, hunger: 4, hungerStart: 4, hungerMax: 20, fright: 1, appeal: 1, marks: 3 }
+    },
+    large: {
+      key: "large",
+      label: "Большой",
+      size: "large",
+      stats: { pow: 4, insight: 3, shell: 4, grace: 2 },
+      pools: { heart: 8, stam: 3, soul: 3 },
+      meta: { speed: 5, hunger: 9, hungerStart: 9, hungerMax: 25, fright: 1.5, appeal: 1, marks: 3 }
+    }
+  },
+
   itemTypes: [
     "weapon",
     "shield",
@@ -62,6 +89,68 @@ export const HK = {
     const n = Number(value);
     if (!Number.isFinite(n)) return min;
     return Math.max(min, Math.min(max, n));
+  },
+
+  sizeTemplateOptions() {
+    return Object.values(HK.sizeTemplates).map(template => ({ key: template.key, label: template.label }));
+  },
+
+  async applySizeTemplate(actor, key = "medium") {
+    const template = HK.sizeTemplates[key] ?? HK.sizeTemplates.medium;
+    const updates = {
+      "system.builder.sizeTemplate": template.key,
+      "system.meta.size": template.size,
+      "system.meta.speed": template.meta.speed,
+      "system.meta.hunger": template.meta.hunger,
+      "system.meta.fright": template.meta.fright,
+      "system.meta.appeal": template.meta.appeal,
+      "system.meta.marks.value": template.meta.marks,
+      "system.meta.marks.max": template.meta.marks,
+      "system.pools.heart.value": template.pools.heart,
+      "system.pools.heart.max": template.pools.heart,
+      "system.pools.soul.value": template.pools.soul,
+      "system.pools.soul.max": template.pools.soul,
+      "system.pools.stam.value": template.pools.stam,
+      "system.pools.stam.max": template.pools.stam,
+      "system.pools.satiety.max": Math.max(10, template.meta.hunger),
+      "system.stats.pow.value": template.stats.pow,
+      "system.stats.pow.half": 0,
+      "system.stats.grace.value": template.stats.grace,
+      "system.stats.grace.half": 0,
+      "system.stats.shell.value": template.stats.shell,
+      "system.stats.shell.half": 0,
+      "system.stats.insight.value": template.stats.insight,
+      "system.stats.insight.half": 0
+    };
+    await actor.update(updates);
+    ui.notifications.info(`HKRPG: применён шаблон размера «${template.label}».`);
+    return updates;
+  },
+
+  async syncActorMaximums(actor) {
+    const heartMax = HK.effectivePoolMax(actor, "heart");
+    const soulMax = HK.effectivePoolMax(actor, "soul");
+    const stamMax = HK.effectivePoolMax(actor, "stam");
+    const suppliesMax = HK.effectivePoolMax(actor, "supplies");
+    const essenceMax = HK.effectivePoolMax(actor, "essence");
+    const satietyMax = actor.system?.derived?.character?.satietyMax ?? Math.max(10, HK.effectiveMeta(actor, "hunger"));
+    const updates = {
+      "system.pools.heart.max": heartMax,
+      "system.pools.soul.max": soulMax,
+      "system.pools.stam.max": stamMax,
+      "system.pools.supplies.max": suppliesMax,
+      "system.pools.essence.max": essenceMax,
+      "system.pools.satiety.max": satietyMax,
+      "system.pools.heart.value": Math.min(Number(actor.system?.pools?.heart?.value ?? 0), heartMax),
+      "system.pools.soul.value": Math.min(Number(actor.system?.pools?.soul?.value ?? 0), soulMax),
+      "system.pools.stam.value": Math.min(Number(actor.system?.pools?.stam?.value ?? 0), stamMax),
+      "system.pools.supplies.value": Math.min(Number(actor.system?.pools?.supplies?.value ?? 0), suppliesMax),
+      "system.pools.essence.value": Math.min(Number(actor.system?.pools?.essence?.value ?? 0), essenceMax),
+      "system.pools.satiety.value": Math.min(Number(actor.system?.pools?.satiety?.value ?? 0), satietyMax)
+    };
+    await actor.update(updates);
+    ui.notifications.info("HKRPG: максимумы и текущие значения запасов синхронизированы.");
+    return updates;
   },
 
   _resultsFromRoll(roll) {
@@ -256,4 +345,6 @@ Hooks.once("ready", () => {
   game.hk.useConsumable = (item, actor) => HK.useConsumable(item, actor);
   game.hk.useTechnique = (item, actor) => HK.useTechnique(item, actor);
   game.hk.toggleEquip = item => HK.toggleEquip(item);
+  game.hk.applySizeTemplate = (actor, key) => HK.applySizeTemplate(actor, key);
+  game.hk.syncActorMaximums = actor => HK.syncActorMaximums(actor);
 });
