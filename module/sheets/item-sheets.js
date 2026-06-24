@@ -13,6 +13,8 @@ class HKBaseItemSheet extends ItemSheet {
     data.isCharm = this.item.type === "charm";
     data.isConsumable = this.item.type === "consumable";
     data.isGear = this.item.type === "gear";
+    data.isShield = this.item.type === "shield";
+    data.isFocus = this.item.type === "focus";
     return data;
   }
 }
