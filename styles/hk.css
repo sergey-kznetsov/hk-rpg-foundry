@@ -5,24 +5,41 @@
 .hk.sheet .hk-subtitle { opacity: 0.75; margin-top: 2px; }
 .hk.sheet .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
 .hk.sheet .skills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 8px; }
-.hk.sheet .hk-calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 12px; margin-top: 8px; }
+.hk.sheet .hk-calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+.hk.sheet .hk-text-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .hk.sheet .box { border: 1px solid var(--color-border-light-2); border-radius: 6px; padding: 8px; margin-bottom: 8px; }
 .hk.sheet .hk-calculator { border-color: var(--color-border-highlight); background: rgba(0, 0, 0, 0.04); }
+.hk.sheet .hk-profile { border-color: rgba(120, 90, 40, 0.6); }
 .hk.sheet .row { display: flex; gap: 6px; align-items: center; margin: 4px 0; }
 .hk.sheet label { flex: 1; }
 .hk.sheet input[type="number"] { width: 72px; }
 .hk.sheet input[type="checkbox"] { width: auto; }
 .hk.sheet input:not([type="checkbox"]):not([type="number"]) { width: 180px; }
 .hk.sheet select { min-width: 120px; }
-.hk.sheet textarea { width: 100%; min-height: 90px; resize: vertical; font-family: var(--font-monospace); }
+.hk.sheet textarea { width: 100%; min-height: 74px; resize: vertical; font-family: var(--font-primary); }
 .hk.sheet .items { margin-top: 8px; }
 .hk.sheet .items .item { display:flex; align-items:center; justify-content:space-between; gap: 8px; padding: 4px 0; border-bottom: 1px solid var(--color-border-light-2); }
 .hk.sheet .items .item span:first-child { overflow: hidden; text-overflow: ellipsis; }
 .hk.sheet .items .item span:last-child { display: inline-flex; align-items: center; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
 .hk.sheet .items .item a { margin-left: 6px; cursor: pointer; }
 .hk.sheet .hk-button-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-.hk.sheet .hk-muted { opacity: 0.7; font-size: 0.9em; white-space: nowrap; }
+.hk.sheet .hk-muted, .hk-muted { opacity: 0.7; font-size: 0.9em; }
+.hk.sheet .hk-help { opacity: 0.82; margin: 2px 0 8px; line-height: 1.35; }
+.hk.sheet .hk-calc-card { border: 1px solid var(--color-border-light-2); border-radius: 5px; padding: 6px; background: rgba(255, 255, 255, 0.035); }
+.hk.sheet .hk-calc-card small { display: block; opacity: 0.72; margin-top: 3px; line-height: 1.25; }
 .hk.sheet button { margin-top: 2px; }
 .hk.sheet .hk-warnings { margin-top: 8px; display: grid; gap: 4px; }
 .hk.sheet .hk-warning { border-left: 3px solid #a33; padding: 4px 6px; background: rgba(160, 40, 40, 0.12); }
 .hk.sheet .hk-ok { margin-top: 8px; border-left: 3px solid #2f7d32; padding: 4px 6px; background: rgba(40, 140, 70, 0.12); }
+.hk-chat-card { border-left: 3px solid var(--color-border-highlight); padding-left: 8px; }
+.hk-chat-actions { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+.hk-token-panel { position: fixed; left: 8px; bottom: 94px; width: 270px; max-height: 62vh; overflow: auto; z-index: 70; padding: 8px; border-radius: 8px; border: 1px solid var(--color-border-dark); background: rgba(20, 20, 20, 0.88); color: var(--color-text-light-highlight); box-shadow: 0 0 12px rgba(0,0,0,0.45); }
+.hk-token-panel header { display: flex; gap: 8px; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.18); padding-bottom: 6px; margin-bottom: 6px; }
+.hk-token-panel header img { width: 36px; height: 36px; object-fit: cover; border-radius: 5px; border: 1px solid rgba(255,255,255,0.25); }
+.hk-token-panel section { margin: 6px 0; }
+.hk-token-panel h4 { margin: 4px 0; font-size: 0.95em; }
+.hk-token-panel .hk-panel-actions { display: flex; flex-wrap: wrap; gap: 4px; }
+.hk-token-panel button { font-size: 0.86em; line-height: 1.1; padding: 3px 5px; }
+.hk-token-panel .hk-panel-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+.hk-token-panel .hk-panel-tags span { border: 1px solid rgba(255,255,255,0.22); border-radius: 999px; padding: 2px 6px; font-size: 0.82em; }
+.hk-token-panel footer { display: flex; gap: 5px; border-top: 1px solid rgba(255,255,255,0.18); padding-top: 6px; margin-top: 6px; }
