@@ -66,6 +66,8 @@
     "Pairable": "Парное",
     "ProvokesAdjacent": "Провоцирует вблизи",
     "Equipped": "Надето",
+    "NotEquipped": "Не надето",
+    "Use": "Использовать",
     "Kind": "Тип",
     "AbsorbBonus": "Бонус впитывания",
     "AbsorbRerolls": "Перебросы впитывания",
@@ -98,6 +100,11 @@
     "ImportContent": "Импортировать контент HKRPG",
     "ImportItems": "Импортировать предметы",
     "ImportCreatures": "Импортировать монстров",
-    "ImportNpcs": "Импортировать НИПов"
+    "ImportNpcs": "Импортировать НИПов",
+    "Effective": "Эфф.",
+    "EffectiveMax": "Эфф. макс.",
+    "ActiveEffects": "Активные эффекты",
+    "FreeMarks": "Свободные Метки",
+    "EffectsJson": "Эффекты JSON"
   }
 }
