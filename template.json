@@ -53,6 +53,8 @@
         "activeEffects": 0,
         "equippedMarks": 0,
         "freeMarks": 3,
+        "encumbrancePenalty": 0,
+        "staminaSurcharge": 0,
         "character": {
           "sizeKey": "medium",
           "sizeLabel": "Средний",
@@ -71,6 +73,8 @@
           "carry": 3,
           "hardLoad": 6,
           "encumbrance": "ok",
+          "encumbrancePenalty": 0,
+          "staminaSurcharge": 0,
           "hunger": 4,
           "hungerMax": 20,
           "hungerStart": 4,
