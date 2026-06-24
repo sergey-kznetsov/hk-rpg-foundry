@@ -4,7 +4,6 @@ import { calculateEffectiveSystem } from "../mechanics/effects.js";
 
 const TECH_TYPES = new Set(["art", "spell"]);
 const WEIGHT_TYPES = new Set(["weapon", "shield", "armor", "focus", "consumable", "gear"]);
-const ENCUMBRANCE_STATS = new Set(["pow", "grace"]);
 
 function n(value, fallback = 0) {
   const parsed = Number(value);
@@ -56,21 +55,31 @@ export class HKActor extends Actor {
     const s = this.system ?? {};
     s.effective = calculateEffectiveSystem(this);
 
-    const pow = n(s.effective?.stats?.pow?.value ?? s.stats?.pow?.value);
-    const grace = n(s.effective?.stats?.grace?.value ?? s.stats?.grace?.value);
+    const rawPow = n(s.effective?.stats?.pow?.value ?? s.stats?.pow?.value);
+    const rawGrace = n(s.effective?.stats?.grace?.value ?? s.stats?.grace?.value);
     const shell = n(s.effective?.stats?.shell?.value ?? s.stats?.shell?.value);
     const insight = n(s.effective?.stats?.insight?.value ?? s.stats?.insight?.value);
 
-    s.derived ??= {};
-    const carry = Math.floor(pow);
-    const maneuver = Math.ceil(grace / 2);
-    const beltSlots = Math.floor(shell);
-    const techSlots = Math.floor(insight);
+    const carry = Math.floor(rawPow);
+    const carriedWeight = this.items.reduce((total, item) => total + itemWeight(item), 0);
+    const hardLoad = Math.max(0, carry * 2);
+    const encumbrance = carriedWeight > hardLoad ? "blocked" : (carriedWeight > carry ? "overloaded" : "ok");
+    const encumbrancePenalty = encumbrance === "ok" ? 0 : -1;
+    const staminaSurcharge = encumbrance === "ok" ? 0 : 1;
 
+    if (encumbrancePenalty) {
+      s.effective.stats.pow.value = Math.max(0, rawPow + encumbrancePenalty);
+      s.effective.stats.grace.value = Math.max(0, rawGrace + encumbrancePenalty);
+    }
+
+    const pow = n(s.effective?.stats?.pow?.value ?? rawPow);
+    const grace = n(s.effective?.stats?.grace?.value ?? rawGrace);
+
+    s.derived ??= {};
     s.derived.carry = carry;
-    s.derived.maneuver = maneuver;
-    s.derived.beltSlots = beltSlots;
-    s.derived.techSlots = techSlots;
+    s.derived.maneuver = Math.ceil(grace / 2);
+    s.derived.beltSlots = Math.floor(shell);
+    s.derived.techSlots = Math.floor(insight);
 
     const armor = HK.getEquippedArmor(this);
     const durability = n(armor?.system?.defense?.durability?.value, 0);
@@ -83,19 +92,11 @@ export class HKActor extends Actor {
 
     const traits = this.items.filter(i => i.type === "trait");
     const mainTraits = traits.filter(i => !bool(i.system?.isSubtrait));
-    const pathRanks = this.items
-      .filter(i => i.type === "path")
-      .reduce((total, path) => total + Math.max(0, n(path.system?.rank, 0)), 0);
-    const martialRanks = this.items
-      .filter(i => i.type === "path" && i.system?.category === "martial")
-      .reduce((total, path) => total + Math.max(0, n(path.system?.rank, 0)), 0);
-    const mysticRanks = this.items
-      .filter(i => i.type === "path" && i.system?.category === "mystic")
-      .reduce((total, path) => total + Math.max(0, n(path.system?.rank, 0)), 0);
+    const pathRanks = this.items.filter(i => i.type === "path").reduce((total, path) => total + Math.max(0, n(path.system?.rank, 0)), 0);
+    const martialRanks = this.items.filter(i => i.type === "path" && i.system?.category === "martial").reduce((total, path) => total + Math.max(0, n(path.system?.rank, 0)), 0);
+    const mysticRanks = this.items.filter(i => i.type === "path" && i.system?.category === "mystic").reduce((total, path) => total + Math.max(0, n(path.system?.rank, 0)), 0);
 
-    const equippedMarks = this.items
-      .filter(i => i.type === "charm" && i.system?.equipped === true)
-      .reduce((total, charm) => total + n(charm.system?.marks, 0), 0);
+    const equippedMarks = this.items.filter(i => i.type === "charm" && i.system?.equipped === true).reduce((total, charm) => total + n(charm.system?.marks, 0), 0);
     const marksMax = n(s.effective?.meta?.marks?.max ?? s.meta?.marks?.max, 0);
     s.derived.equippedMarks = equippedMarks;
     s.derived.freeMarks = Math.max(0, marksMax - equippedMarks);
@@ -105,12 +106,6 @@ export class HKActor extends Actor {
     const preparedArts = preparedTech.filter(i => i.type === "art").length;
     const preparedSpells = preparedTech.filter(i => i.type === "spell").length;
     const usedTechSlots = preparedTech.length;
-
-    const carriedWeight = this.items.reduce((total, item) => total + itemWeight(item), 0);
-    const hardLoad = Math.max(0, carry * 2);
-    const encumbrance = carriedWeight > hardLoad ? "blocked" : (carriedWeight > carry ? "overloaded" : "ok");
-    const encumbrancePenalty = encumbrance === "ok" ? 0 : -1;
-    const staminaSurcharge = encumbrance === "ok" ? 0 : 1;
 
     const key = sizeKey(s);
     const template = HK.sizeTemplates?.[key] ?? HK.sizeTemplates?.medium;
@@ -134,7 +129,7 @@ export class HKActor extends Actor {
       preparedArts,
       preparedSpells,
       usedTechSlots,
-      techSlots,
+      techSlots: s.derived.techSlots,
       carriedWeight,
       carry,
       hardLoad,
@@ -149,7 +144,7 @@ export class HKActor extends Actor {
       marksUsed: equippedMarks,
       marksMax,
       marksFree: Math.max(0, marksMax - equippedMarks),
-      warnings: buildWarnings({ system: s, traitCount: mainTraits.length, hunger, hungerMax, usedMarks: equippedMarks, marksMax, usedTechSlots, techSlots, carriedWeight, carry, hardLoad, encumbrance })
+      warnings: buildWarnings({ system: s, traitCount: mainTraits.length, hunger, hungerMax, usedMarks: equippedMarks, marksMax, usedTechSlots, techSlots: s.derived.techSlots, carriedWeight, carry, hardLoad, encumbrance })
     };
 
     s.derived.encumbrancePenalty = encumbrancePenalty;
