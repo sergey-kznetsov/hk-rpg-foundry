@@ -83,6 +83,7 @@
     "Category": "Категория",
     "Rank": "Ранг",
     "Prepared": "Подготовлено",
+    "NotPrepared": "Не подготовлено",
     "StamCost": "Стоимость Выносливости",
     "SoulCost": "Стоимость Души",
     "Mystery": "Тайна / Путь магии",
@@ -105,6 +106,23 @@
     "EffectiveMax": "Эфф. макс.",
     "ActiveEffects": "Активные эффекты",
     "FreeMarks": "Свободные Метки",
-    "EffectsJson": "Эффекты JSON"
+    "EffectsJson": "Эффекты JSON",
+    "CharacterCalculator": "Калькулятор персонажа",
+    "SizeTemplate": "Шаблон размера",
+    "ApplySizeTemplate": "Применить шаблон",
+    "SyncMaximums": "Синхронизировать максимумы",
+    "RecoverStamina": "Восст. Выносливость",
+    "FocusSoul": "Фокусировка Души",
+    "Rest": "Отдых",
+    "LongRest": "Долгий отдых",
+    "TraitsUsed": "Черты",
+    "SubtraitsShort": "подчерт",
+    "HardLoad": "макс.",
+    "PathRanks": "Ранги Путей",
+    "Martial": "воин.",
+    "Mystic": "мист.",
+    "SatietyMaxCalc": "Макс. Сытость",
+    "SatietyLossRest": "Расход за отдых",
+    "CharacterOk": "Калькулятор не видит превышений по базовым ограничениям."
   }
 }
